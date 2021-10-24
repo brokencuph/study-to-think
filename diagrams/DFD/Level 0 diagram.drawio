@@ -1,4 +1,4 @@
-<mxfile host="app.diagrams.net" modified="2021-10-24T14:06:04.576Z" agent="5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.81 Safari/537.36" etag="lXA1KIOG05oJAG_iay5F" version="15.5.9" type="github">
+<mxfile host="app.diagrams.net" modified="2021-10-24T14:09:37.539Z" agent="5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.81 Safari/537.36" etag="TPgREEX_DKrVfKmmCKI8" version="15.5.9" type="github">
   <diagram id="Wr4s08uyT-qvl8gvXiOg" name="Page-1">
     <mxGraphModel dx="2076" dy="1054" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
@@ -101,6 +101,9 @@
         </mxCell>
         <mxCell id="kOY58Y0KntewSXWVwahC-23" value="Rating item record" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Comic Sans MS;fontSize=14;" vertex="1" parent="1">
           <mxGeometry x="655" y="600" width="140" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="kOY58Y0KntewSXWVwahC-26" value="" style="rounded=0;whiteSpace=wrap;html=1;fontFamily=Comic Sans MS;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="294" y="910" width="120" height="60" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
