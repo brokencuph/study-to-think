@@ -1,6 +1,6 @@
-<mxfile host="app.diagrams.net" modified="2021-10-24T13:53:53.288Z" agent="5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.81 Safari/537.36" etag="_P9jr0uakwphSdsKRyyn" version="15.5.9" type="github">
+<mxfile host="app.diagrams.net" modified="2021-10-24T13:56:18.570Z" agent="5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.81 Safari/537.36" etag="DTcZyJURI_8s7r9gukiR" version="15.5.9" type="github">
   <diagram id="Wr4s08uyT-qvl8gvXiOg" name="Page-1">
-    <mxGraphModel dx="1038" dy="527" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+    <mxGraphModel dx="1730" dy="878" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -75,6 +75,15 @@
         </mxCell>
         <mxCell id="kOY58Y0KntewSXWVwahC-18" value="Formatted rating item information" style="edgeLabel;resizable=0;html=1;align=center;verticalAlign=middle;fontFamily=Comic Sans MS;fontSize=14;" connectable="0" vertex="1" parent="kOY58Y0KntewSXWVwahC-17">
           <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="kOY58Y0KntewSXWVwahC-19" value="" style="shape=partialRectangle;whiteSpace=wrap;html=1;bottom=0;right=0;fillColor=none;fontFamily=Comic Sans MS;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="50" y="585" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="kOY58Y0KntewSXWVwahC-20" value="" style="endArrow=none;html=1;rounded=0;fontFamily=Comic Sans MS;fontSize=14;entryX=1;entryY=1;entryDx=0;entryDy=0;exitX=0;exitY=1;exitDx=0;exitDy=0;" edge="1" parent="1" source="kOY58Y0KntewSXWVwahC-19" target="kOY58Y0KntewSXWVwahC-19">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="53" y="645" as="sourcePoint" />
+            <mxPoint x="102.5" y="595" as="targetPoint" />
+          </mxGeometry>
         </mxCell>
       </root>
     </mxGraphModel>
