@@ -1,4 +1,4 @@
-<mxfile host="app.diagrams.net" modified="2021-10-24T08:23:19.997Z" agent="5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.81 Safari/537.36" etag="xh04UmSdEmLZDTBJL7-O" version="15.5.8" type="github">
+<mxfile host="app.diagrams.net" modified="2021-10-24T08:25:13.133Z" agent="5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.81 Safari/537.36" etag="F0MJwcS-tfr8BSWJNA_V" version="15.5.8" type="github">
   <diagram id="C5RBs43oDa-KdzZeNtuy" name="Page-1">
     <mxGraphModel dx="1040" dy="528" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
@@ -16,7 +16,7 @@
             <mxPoint x="510" y="200.5" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="Z1wTB77EjDg7nfGyv06Q-15" value="student (grade) data/command&amp;nbsp;" style="edgeLabel;resizable=0;html=1;align=center;verticalAlign=middle;fontFamily=Times New Roman;fontSize=18;" connectable="0" vertex="1" parent="Z1wTB77EjDg7nfGyv06Q-14">
+        <mxCell id="Z1wTB77EjDg7nfGyv06Q-15" value="Student (grade) data/command&amp;nbsp;" style="edgeLabel;resizable=0;html=1;align=center;verticalAlign=middle;fontFamily=Times New Roman;fontSize=18;" connectable="0" vertex="1" parent="Z1wTB77EjDg7nfGyv06Q-14">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="Z1wTB77EjDg7nfGyv06Q-20" value="" style="rounded=1;whiteSpace=wrap;html=1;fontFamily=Times New Roman;fontSize=18;" vertex="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
@@ -37,7 +37,7 @@
             <mxPoint x="260" y="270" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="Z1wTB77EjDg7nfGyv06Q-30" value="student class and related diagram" style="edgeLabel;resizable=0;html=1;align=center;verticalAlign=middle;fontFamily=Times New Roman;fontSize=18;" connectable="0" vertex="1" parent="Z1wTB77EjDg7nfGyv06Q-29">
+        <mxCell id="Z1wTB77EjDg7nfGyv06Q-30" value="Student class and related diagram" style="edgeLabel;resizable=0;html=1;align=center;verticalAlign=middle;fontFamily=Times New Roman;fontSize=18;" connectable="0" vertex="1" parent="Z1wTB77EjDg7nfGyv06Q-29">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="Z1wTB77EjDg7nfGyv06Q-31" value="SST&lt;br&gt;Grading&lt;br&gt;System" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontFamily=Times New Roman;fontSize=18;" vertex="1" parent="WIyWlLk6GJQsqaUBKTNV-1">
@@ -55,7 +55,7 @@
             <mxPoint x="610" y="320" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="Z1wTB77EjDg7nfGyv06Q-36" value="&lt;font style=&quot;font-size: 18px&quot;&gt;external infomation&lt;/font&gt;" style="edgeLabel;resizable=0;html=1;align=center;verticalAlign=middle;fontFamily=Times New Roman;fontSize=18;rotation=-90;" connectable="0" vertex="1" parent="Z1wTB77EjDg7nfGyv06Q-35">
+        <mxCell id="Z1wTB77EjDg7nfGyv06Q-36" value="&lt;font style=&quot;font-size: 18px&quot;&gt;External infomation&lt;/font&gt;" style="edgeLabel;resizable=0;html=1;align=center;verticalAlign=middle;fontFamily=Times New Roman;fontSize=18;rotation=-90;" connectable="0" vertex="1" parent="Z1wTB77EjDg7nfGyv06Q-35">
           <mxGeometry relative="1" as="geometry">
             <mxPoint y="5" as="offset" />
           </mxGeometry>
@@ -66,7 +66,7 @@
             <mxPoint x="460" y="420" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="Z1wTB77EjDg7nfGyv06Q-38" value="student (grade) information" style="edgeLabel;resizable=0;html=1;align=center;verticalAlign=middle;fontFamily=Times New Roman;fontSize=18;rotation=270;" connectable="0" vertex="1" parent="Z1wTB77EjDg7nfGyv06Q-37">
+        <mxCell id="Z1wTB77EjDg7nfGyv06Q-38" value="Student (grade) information" style="edgeLabel;resizable=0;html=1;align=center;verticalAlign=middle;fontFamily=Times New Roman;fontSize=18;rotation=270;" connectable="0" vertex="1" parent="Z1wTB77EjDg7nfGyv06Q-37">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
       </root>
