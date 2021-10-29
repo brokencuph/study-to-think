@@ -1,5 +1,8 @@
 // grading_scheme.h: Definition of rating items.
 
+#ifndef GRADING_SCHEME_H
+#define GRADING_SCHEME_H
+
 #include <memory>
 #include <map>
 #include <vector>
@@ -72,3 +75,5 @@ public:
 
 void initializeItemAttendance();
 
+
+#endif
