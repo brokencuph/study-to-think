@@ -2,6 +2,7 @@
   "name": "study-to-think",
   "version-string": "0.1.0",
   "dependencies": [
-    "sqlite3"
+    "sqlite3",
+    "gtest"
   ]
 }
