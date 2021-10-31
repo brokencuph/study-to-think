@@ -27,7 +27,7 @@ static const char* createCommands[] =
 	FOREIGN KEY("student_id") REFERENCES "student"("student_id")))"
 };
 
-DbSession::DbSession(const char fileName[])
+void DbSession::open(const char fileName[])
 {
 	int res;
 	if ((res = sqlite3_open_v2(fileName, &this->conn, SQLITE_OPEN_READWRITE, nullptr)) != SQLITE_OK)
@@ -53,7 +53,23 @@ DbSession::DbSession(const char fileName[])
 	}
 }
 
+DbSession::DbSession(const char fileName[])
+{
+	conn = nullptr;
+	open(fileName);
+}
+
 DbSession::~DbSession()
 {
-	sqlite3_close(conn);
+	if (conn != nullptr)
+	{
+		sqlite3_close(conn);
+		conn = nullptr;
+	}
+}
+
+DbSession::DbSession(DbSession&& other) noexcept
+{
+	this->conn = other.conn;
+	other.conn = nullptr;
 }
