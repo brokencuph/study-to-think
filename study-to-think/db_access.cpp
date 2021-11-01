@@ -47,10 +47,15 @@ void DbSession::open(const char fileName[])
 			{
 				std::string msg(errmsg);
 				sqlite3_free(errmsg);
-				throw std::invalid_argument(std::string(msg));
+				throw std::runtime_error(std::string(msg));
 			}
 		}
 	}
+}
+
+sqlite3* DbSession::get()
+{
+	return conn;
 }
 
 DbSession::DbSession(const char fileName[])
@@ -72,4 +77,15 @@ DbSession::DbSession(DbSession&& other) noexcept
 {
 	this->conn = other.conn;
 	other.conn = nullptr;
+}
+
+std::string DbSession::polishForSql(const std::string& str)
+{
+	std::string ans = str;
+	return "'" + ans + "'";
+}
+
+std::string DbSession::polishForSql(int x)
+{
+	return std::to_string(x);
 }
