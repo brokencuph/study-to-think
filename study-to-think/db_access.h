@@ -5,6 +5,7 @@
 
 #include <sstream>
 #include <iostream>
+#include <vector>
 #include <sqlite3.h>
 
 
@@ -12,6 +13,21 @@
 class DbSession
 {
 	sqlite3* conn;
+
+	// first parameter points to a vector<T>
+	template <class T>
+	static int sqliteVectorCallback(void* obj, int num, char** vals, char** names)
+	{
+		std::vector<T>& vec = *static_cast<std::vector<T>*>(obj);
+		T newObj;
+		int res = T::selectCallback(&newObj, num, vals, names);
+		if (res != 0)
+		{
+			return res;
+		}
+		vec.push_back(std::move(newObj));
+		return 0;
+	}
 public:
 	void open(const char fileName[]);
 
@@ -72,6 +88,22 @@ public:
 		//std::cerr << ss.str() << std::endl;
 		char* errmsg;
 		sqlite3_exec(conn, ss.str().c_str(), T::selectCallback, &obj, &errmsg);
+		if (errmsg != nullptr)
+		{
+			std::string msg(errmsg);
+			sqlite3_free(errmsg);
+			throw std::runtime_error(std::string(msg));
+		}
+	}
+
+	template <class T>
+	void retrieveAll(std::vector<T>& vec)
+	{
+		using std::stringstream;
+		stringstream ss;
+		ss << "SELECT * FROM " << T::db_TableName;
+		char* errmsg;
+		sqlite3_exec(conn, ss.str().c_str(), DbSession::sqliteVectorCallback<T>, &vec, &errmsg);
 		if (errmsg != nullptr)
 		{
 			std::string msg(errmsg);

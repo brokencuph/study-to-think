@@ -22,6 +22,7 @@ public:
 	ExtraStudentInfo extraInfo;
 
 	Student(std::string name, StudentIdType id);
+	Student() = default;
 	// toDbRepr()
 	// fromDbRepr()
 
