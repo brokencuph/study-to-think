@@ -5,6 +5,8 @@
 #include <sqlite3.h>
 #include "db_access.h"
 
+
+
 static const char* createCommands[] =
 {
 	R"(CREATE TABLE "student" (
@@ -17,12 +19,13 @@ static const char* createCommands[] =
 	"item_name"	TEXT NOT NULL UNIQUE,
 	"item_type"	INTEGER NOT NULL,
 	"weight"	INTEGER NOT NULL CHECK(weight > 0 AND weight <= 100),
+	"params"	TEXT NOT NULL,
 	PRIMARY KEY("item_name")))",
 
 	R"(CREATE TABLE "student_grade" (
 	"student_id"	TEXT NOT NULL,
 	"item_name"	TEXT NOT NULL,
-	"grade_info"	BLOB,
+	"grade_info"	TEXT,
 	FOREIGN KEY("item_name") REFERENCES "rating_item"("item_name"),
 	FOREIGN KEY("student_id") REFERENCES "student"("student_id")))"
 };

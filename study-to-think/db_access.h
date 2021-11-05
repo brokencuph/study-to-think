@@ -8,6 +8,9 @@
 #include <vector>
 #include <sqlite3.h>
 
+#ifndef NDEBUG
+#define SQL_DEBUG
+#endif
 
 // wrapper for sqlite3 handle
 class DbSession
@@ -48,7 +51,9 @@ public:
 		stringstream ss;
 		ss << "INSERT INTO " << T::db_TableName
 			<< " VALUES " << obj.getDbTuple();
-		//std::cerr << ss.str() << std::endl;
+#ifdef SQL_DEBUG
+		std::cerr << ss.str() << std::endl;
+#endif
 		char* errmsg = (char*)1;
 		sqlite3_exec(conn, ss.str().c_str(), nullptr, nullptr, &errmsg);
 		if (errmsg != nullptr)
@@ -67,7 +72,9 @@ public:
 		ss << "UPDATE " << T::db_TableName
 			<< " SET " << T::db_ColumnNames << " = " << obj.getDbTuple()
 			<< " WHERE " << T::db_KeyColumn << " = " << obj.getDbKeyValue();
-		//std::cerr << ss.str() << std::endl;
+#ifdef SQL_DEBUG
+		std::cerr << ss.str() << std::endl;
+#endif
 		char* errmsg;
 		sqlite3_exec(conn, ss.str().c_str(), nullptr, nullptr, &errmsg);
 		if (errmsg != nullptr)
@@ -85,7 +92,9 @@ public:
 		stringstream ss;
 		ss << "SELECT * FROM " << T::db_TableName
 			<< " WHERE " << T::db_KeyColumn << " = " << obj.getDbKeyValue();
-		//std::cerr << ss.str() << std::endl;
+#ifdef SQL_DEBUG
+		std::cerr << ss.str() << std::endl;
+#endif
 		char* errmsg;
 		sqlite3_exec(conn, ss.str().c_str(), T::selectCallback, &obj, &errmsg);
 		if (errmsg != nullptr)
@@ -102,6 +111,9 @@ public:
 		using std::stringstream;
 		stringstream ss;
 		ss << "SELECT * FROM " << T::db_TableName;
+#ifdef SQL_DEBUG
+		std::cerr << ss.str() << std::endl;
+#endif
 		char* errmsg;
 		sqlite3_exec(conn, ss.str().c_str(), DbSession::sqliteVectorCallback<T>, &vec, &errmsg);
 		if (errmsg != nullptr)

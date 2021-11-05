@@ -3,6 +3,7 @@
 #include <gtest/gtest.h>
 #include "../study-to-think/db_access.h"
 #include "../study-to-think/student.h"
+#include "../study-to-think/grading_scheme.h"
 
 //using namespace ::testing;
 
@@ -41,6 +42,33 @@ TEST(DbTest, StudentCRU)
 		AllOf(Field(&Student::name, Eq("ZHANG XIUBO")), Field(&Student::id, Eq("1809853G-I011-0014")))));
 	SUCCEED();
 }
+
+TEST(DbTest, RatingItemCRU)
+{
+	using namespace ::testing;
+	system("copy /Y ..\\..\\..\\..\\test_crud.db .\\test_crud.db");
+	DbSession testSession("test_crud.db");
+	std::vector<RatingItem> itemList;
+	testSession.retrieveAll(itemList);
+	ASSERT_EQ(itemList.size(), 1);
+	ASSERT_EQ(itemList[0].name, "Check In");
+	ASSERT_EQ(itemList[0].weight, 20);
+	ASSERT_EQ(itemList[0].item->getCurrentItemType(), 0);
+	ASSERT_EQ(((ItemAttendance*)itemList[0].item.get())->getSessionNumber(), 15);
+	RatingItem newItem;
+	newItem.name = "Exam 1";
+	newItem.weight = 30;
+	newItem.item = std::unique_ptr<ItemInfo>(new ItemManual);
+	testSession.insert(newItem);
+	RatingItem anotherNewItem;
+	anotherNewItem.name = "Exam 1";
+	testSession.retrieveByKey(anotherNewItem);
+	ASSERT_EQ(anotherNewItem.name, newItem.name);
+	ASSERT_EQ(anotherNewItem.weight, newItem.weight);
+	ASSERT_EQ(anotherNewItem.item->getCurrentItemType(), newItem.item->getCurrentItemType());
+	SUCCEED();
+}
+
 
 int main(int argc, char** argv)
 {
