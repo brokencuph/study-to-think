@@ -173,7 +173,6 @@ int RatingItem::selectCallback(void* obj, int num, char** vals, char** names)
 	RatingItem* ratingItem = static_cast<RatingItem*>(obj);
 	ratingItem->name = vals[0];
 	ratingItem->weight = atoi(vals[2]);
-	// TODO: to be done
 	int itemTypeId = atoi(vals[1]);
 	switch (itemTypeId)
 	{
