@@ -9,7 +9,11 @@
 
 TEST(DbTest, Creation)
 {
+#ifdef WIN32
 	system("del .\\testdb.db");
+#else
+	system("rm ./testdb.db");
+#endif
 	DbSession testSession("testdb.db");
 	Student stu("HE YUJIE", "1809853J-I011-0065");
 	testSession.insert(stu);
@@ -22,7 +26,11 @@ TEST(DbTest, Creation)
 TEST(DbTest, StudentCRU)
 {
 	using namespace ::testing;
+#ifdef WIN32
 	system("copy /Y ..\\..\\..\\..\\test_crud.db .\\test_crud.db");
+#else
+	system("cp ../../../../test_crud.db ./test_crud.db")
+#endif
 	DbSession testSession("test_crud.db");
 	Student initialStu("", "1809853J-I011-0065");
 	testSession.retrieveByKey(initialStu);
@@ -46,7 +54,11 @@ TEST(DbTest, StudentCRU)
 TEST(DbTest, RatingItemCRU)
 {
 	using namespace ::testing;
+#ifdef WIN32
 	system("copy /Y ..\\..\\..\\..\\test_crud.db .\\test_crud.db");
+#else
+	system("cp ../../../../test_crud.db ./test_crud.db")
+#endif
 	DbSession testSession("test_crud.db");
 	std::vector<RatingItem> itemList;
 	testSession.retrieveAll(itemList);
