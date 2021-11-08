@@ -7,6 +7,12 @@
 
 //using namespace ::testing;
 
+#ifdef WIN32
+#define COPY_DB_FILE(filename) system("copy /Y .\\" filename ".db .\\" filename "_copy.db")
+#else
+#define COPY_DB_FILE(filename) system("cp ./" filename ".db ./" filename "_copy.db")
+#endif
+
 TEST(DbTest, Creation)
 {
 #ifdef WIN32
@@ -26,12 +32,8 @@ TEST(DbTest, Creation)
 TEST(DbTest, StudentCRU)
 {
 	using namespace ::testing;
-#ifdef WIN32
-	system("copy /Y ..\\..\\..\\..\\test_crud.db .\\test_crud.db");
-#else
-	system("cp ../../../../test_crud.db ./test_crud.db")
-#endif
-	DbSession testSession("test_crud.db");
+	COPY_DB_FILE("test_crud");
+	DbSession testSession("test_crud_copy.db");
 	Student initialStu("", "1809853J-I011-0065");
 	testSession.retrieveByKey(initialStu);
 	ASSERT_EQ(initialStu.name, "HE YUJIE");
@@ -54,12 +56,8 @@ TEST(DbTest, StudentCRU)
 TEST(DbTest, RatingItemCRU)
 {
 	using namespace ::testing;
-#ifdef WIN32
-	system("copy /Y ..\\..\\..\\..\\test_crud.db .\\test_crud.db");
-#else
-	system("cp ../../../../test_crud.db ./test_crud.db")
-#endif
-	DbSession testSession("test_crud.db");
+	COPY_DB_FILE("test_crud");
+	DbSession testSession("test_crud_copy.db");
 	std::vector<RatingItem> itemList;
 	testSession.retrieveAll(itemList);
 	ASSERT_EQ(itemList.size(), 1);
