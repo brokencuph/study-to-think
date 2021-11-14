@@ -45,11 +45,24 @@ void MainWindow::selectDbForOpen(bool checked)
         stuModel->setHeaderData(0, Qt::Horizontal, QString("Student ID"));
         stuModel->setHeaderData(1, Qt::Horizontal, QString("Student Name"));
         stuModel->setHeaderData(2, Qt::Horizontal, QString("Information"));
+        
+        connect(stuModel, &QStandardItemModel::itemChanged, this, &MainWindow::studentTableGridEdited);
         ui->tableStudent->setModel(stuModel);
     }
     catch (const std::exception& e)
     {
         QMessageBox::warning(this, tr("Error"), e.what());
+    }
+}
+
+void MainWindow::studentTableGridEdited(QStandardItem* item)
+{
+    // TODO: finish it
+    item->data();
+    switch (item->column())
+    {
+    default:
+        break;
     }
 }
 

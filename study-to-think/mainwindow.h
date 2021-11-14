@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QStandardItem>
 #include "db_access.h"
 #include "student.h"
 
@@ -18,6 +19,8 @@ public:
     ~MainWindow();
 
     void selectDbForOpen(bool checked);
+
+    void studentTableGridEdited(QStandardItem* item);
 
 private:
     Ui::MainWindow *ui;
