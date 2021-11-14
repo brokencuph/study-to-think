@@ -124,6 +124,26 @@ public:
 		}
 	}
 
+	template <class T>
+	void removeByKey(const T& obj)
+	{
+		using std::stringstream;
+		stringstream ss;
+		ss << "DELETE FROM " << T::db_TableName
+			<< " WHERE " << T::db_KeyColumn << " = " << obj.getDbKeyValue();
+#ifdef SQL_DEBUG
+		std::cerr << ss.str() << std::endl;
+#endif
+		char* errmsg;
+		sqlite3_exec(conn, ss.str().c_str(), nullptr, nullptr, &errmsg);
+		if (errmsg != nullptr)
+		{
+			std::string msg(errmsg);
+			sqlite3_free(errmsg);
+			throw std::runtime_error(std::string(msg));
+		}
+	}
+
 	static std::string polishForSql(const std::string&);
 
 	static std::string polishForSql(int);

@@ -29,7 +29,7 @@ TEST(DbTest, Creation)
 	SUCCEED();
 }
 
-TEST(DbTest, StudentCRU)
+TEST(DbTest, StudentCRUD)
 {
 	using namespace ::testing;
 	COPY_DB_FILE("test_crud");
@@ -50,10 +50,14 @@ TEST(DbTest, StudentCRU)
 	testSession.retrieveAll(stus);
 	ASSERT_THAT(stus, UnorderedElementsAre(AllOf(Field(&Student::name, Eq("HE YUJIE is 250")), Field(&Student::id, Eq("1809853J-I011-0065"))),
 		AllOf(Field(&Student::name, Eq("ZHANG XIUBO")), Field(&Student::id, Eq("1809853G-I011-0014")))));
+	testSession.removeByKey(initialStu);
+	Student removedStu("", "1809853J-I011-0065");
+	testSession.retrieveByKey(removedStu);
+	ASSERT_EQ(removedStu.name, "");
 	SUCCEED();
 }
 
-TEST(DbTest, RatingItemCRU)
+TEST(DbTest, RatingItemCRUD)
 {
 	using namespace ::testing;
 	COPY_DB_FILE("test_crud");
@@ -76,6 +80,12 @@ TEST(DbTest, RatingItemCRU)
 	ASSERT_EQ(anotherNewItem.name, newItem.name);
 	ASSERT_EQ(anotherNewItem.weight, newItem.weight);
 	ASSERT_EQ(anotherNewItem.item->getCurrentItemType(), newItem.item->getCurrentItemType());
+	testSession.removeByKey(itemList[0]);
+	RatingItem removedItem;
+	removedItem.name = "Check In";
+	removedItem.weight = 0;
+	testSession.retrieveByKey(removedItem);
+	ASSERT_EQ(removedItem.weight, 0);
 	SUCCEED();
 }
 
