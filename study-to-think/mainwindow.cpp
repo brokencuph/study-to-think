@@ -2,6 +2,7 @@
 #include <QFileDialog>
 #include <QStandardItemModel>
 #include <QVariant>
+#include <algorithm>
 
 #include "mainwindow.h"
 #include "./ui_mainwindow.h"
@@ -39,12 +40,14 @@ void MainWindow::selectDbForOpen(bool checked)
             QStandardItem* item[3];
             item[0] = new QStandardItem(QString(vStudent[i].id.c_str()));
             item[0]->setData(QVariant::fromValue(&vStudent[i]));
-            stuModel->setItem(i, 0,
-                new QStandardItem(QString(vStudent[i].id.c_str())));
-            stuModel->setItem(i, 1,
-                new QStandardItem(QString(vStudent[i].name.c_str())));
-            stuModel->setItem(i, 2,
-                new QStandardItem(QString(vStudent[i].extraInfo.c_str())));
+            item[0]->setEditable(false);
+            item[1] = new QStandardItem(QString(vStudent[i].name.c_str()));
+            item[1]->setData(QVariant::fromValue(&vStudent[i]));
+            item[2] = new QStandardItem(QString(vStudent[i].extraInfo.c_str()));
+            item[2]->setData(QVariant::fromValue(&vStudent[i]));
+            stuModel->setItem(i, 0, item[0]);
+            stuModel->setItem(i, 1, item[1]);
+            stuModel->setItem(i, 2, item[2]);
         }
         stuModel->setHeaderData(0, Qt::Horizontal, QString("Student ID"));
         stuModel->setHeaderData(1, Qt::Horizontal, QString("Student Name"));
@@ -62,10 +65,20 @@ void MainWindow::selectDbForOpen(bool checked)
 void MainWindow::studentTableGridEdited(QStandardItem* item)
 {
     // TODO: finish it
-    
-    item->data();
+    Student* thisStu = item->data().value<Student*>();
     switch (item->column())
     {
+    case STUDENT_COLUMN_ID:
+        // not possible
+        break;
+    case STUDENT_COLUMN_NAME:
+        thisStu->name = item->text().toUtf8().toStdString();
+        this->currentDb->updateByKey(*thisStu);
+        break;
+    case STUDENT_COLUMN_INFORMATION:
+        thisStu->extraInfo = item->text().toUtf8().toStdString();
+        this->currentDb->updateByKey(*thisStu);
+        break;
     default:
         break;
     }

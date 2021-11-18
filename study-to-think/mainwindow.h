@@ -7,6 +7,10 @@
 #include "db_access.h"
 #include "student.h"
 
+#define STUDENT_COLUMN_ID 0
+#define STUDENT_COLUMN_NAME 1
+#define STUDENT_COLUMN_INFORMATION 2
+
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
