@@ -16,7 +16,9 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
     
-    QObject::connect(ui->actionOpen, &QAction::triggered, this, &MainWindow::selectDbForOpen);
+    connect(ui->actionOpen, &QAction::triggered, this, &MainWindow::selectDbForOpen);
+    connect(ui->toolButtonStudentAdd, &QAbstractButton::clicked, this, &MainWindow::uiAddStudent);
+    connect(ui->toolButtonStudentRemove, &QAbstractButton::clicked, this, &MainWindow::uiRemoveStudent);
 }
 
 MainWindow::~MainWindow()
@@ -55,11 +57,21 @@ void MainWindow::selectDbForOpen(bool checked)
         
         connect(stuModel, &QStandardItemModel::itemChanged, this, &MainWindow::studentTableGridEdited);
         ui->tableStudent->setModel(stuModel);
+        ui->toolButtonStudentAdd->setEnabled(true);
+        ui->toolButtonStudentRemove->setEnabled(true);
     }
     catch (const std::exception& e)
     {
         QMessageBox::warning(this, tr("Error"), e.what());
     }
+}
+
+void MainWindow::uiAddStudent(bool)
+{
+}
+
+void MainWindow::uiRemoveStudent(bool)
+{
 }
 
 void MainWindow::studentTableGridEdited(QStandardItem* item)

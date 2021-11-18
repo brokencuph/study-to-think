@@ -25,6 +25,10 @@ public:
 
     void selectDbForOpen(bool checked);
 
+    void uiAddStudent(bool);
+
+    void uiRemoveStudent(bool);
+
     void studentTableGridEdited(QStandardItem* item);
 
 private:
