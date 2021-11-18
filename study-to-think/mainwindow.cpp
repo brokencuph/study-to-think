@@ -64,7 +64,6 @@ void MainWindow::selectDbForOpen(bool checked)
 
 void MainWindow::studentTableGridEdited(QStandardItem* item)
 {
-    // TODO: finish it
     Student* thisStu = item->data().value<Student*>();
     switch (item->column())
     {
