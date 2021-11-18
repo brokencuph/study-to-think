@@ -1,6 +1,7 @@
 #include <QMessageBox>
 #include <QFileDialog>
 #include <QStandardItemModel>
+#include <QVariant>
 
 #include "mainwindow.h"
 #include "./ui_mainwindow.h"
@@ -35,6 +36,9 @@ void MainWindow::selectDbForOpen(bool checked)
         QStandardItemModel* stuModel = new QStandardItemModel(this->vStudent.size(), 3);
         for (int i = 0; i < this->vStudent.size(); i++)
         {
+            QStandardItem* item[3];
+            item[0] = new QStandardItem(QString(vStudent[i].id.c_str()));
+            item[0]->setData(QVariant::fromValue(&vStudent[i]));
             stuModel->setItem(i, 0,
                 new QStandardItem(QString(vStudent[i].id.c_str())));
             stuModel->setItem(i, 1,
@@ -58,6 +62,7 @@ void MainWindow::selectDbForOpen(bool checked)
 void MainWindow::studentTableGridEdited(QStandardItem* item)
 {
     // TODO: finish it
+    
     item->data();
     switch (item->column())
     {

@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QStandardItem>
+#include "qt_defs.h"
 #include "db_access.h"
 #include "student.h"
 
