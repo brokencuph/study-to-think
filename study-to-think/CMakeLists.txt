@@ -16,6 +16,6 @@ find_package(unofficial-sqlite3 CONFIG REQUIRED)
 add_executable (stt "cli_main.cpp" "db_access.cpp" "grading_scheme.cpp" "student.cpp" "cli_main.h")
 target_link_libraries(stt PRIVATE unofficial::sqlite3::sqlite3)
 
-qt_add_executable(stt_gui WIN32 "mainwindow.cpp" "mainwindow.h" "mainwindow.ui" "qt_main.cpp" "db_access.cpp" "student.cpp" "qt_defs.h")
+add_executable(stt_gui WIN32 "mainwindow.cpp" "mainwindow.h" "mainwindow.ui" "qt_main.cpp" "db_access.cpp" "student.cpp" "qt_defs.h")
 target_link_libraries(stt_gui PRIVATE Qt${QT_VERSION_MAJOR}::Widgets unofficial::sqlite3::sqlite3)
 # TODO: Add tests and install targets if needed.
