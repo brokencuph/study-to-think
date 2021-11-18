@@ -77,6 +77,9 @@ void MainWindow::uiAddStudent(bool)
 
 void MainWindow::uiRemoveStudent(bool)
 {
+    //Student stu;
+    //stu.id = "111";
+    //this->currentDb->removeByKey(stu);
 }
 
 void MainWindow::studentTableGridEdited(QStandardItem* item)
