@@ -147,6 +147,8 @@ public:
 	static std::string polishForSql(const std::string&);
 
 	static std::string polishForSql(int);
+
+	static bool checkStringLiteral(const std::string&);
 };
 
 #endif

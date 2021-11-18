@@ -65,17 +65,32 @@ void MainWindow::selectDbForOpen(bool checked)
 void MainWindow::studentTableGridEdited(QStandardItem* item)
 {
     Student* thisStu = item->data().value<Student*>();
+    std::string updatedStr;
     switch (item->column())
     {
     case STUDENT_COLUMN_ID:
         // not possible
         break;
     case STUDENT_COLUMN_NAME:
-        thisStu->name = item->text().toUtf8().toStdString();
+        updatedStr = item->text().toUtf8().toStdString();
+        if (!DbSession::checkStringLiteral(updatedStr))
+        {
+            QMessageBox::critical(this, tr("Invalid Input"), tr("Input could not contain single quote."));
+            item->setText(thisStu->name.c_str());
+            return;
+        }
+        thisStu->name = updatedStr;
         this->currentDb->updateByKey(*thisStu);
         break;
     case STUDENT_COLUMN_INFORMATION:
-        thisStu->extraInfo = item->text().toUtf8().toStdString();
+        updatedStr = item->text().toUtf8().toStdString();
+        if (!DbSession::checkStringLiteral(updatedStr))
+        {
+            QMessageBox::critical(this, tr("Invalid Input"), tr("Input could not contain single quote."));
+            item->setText(thisStu->extraInfo.c_str());
+            return;
+        }
+        thisStu->extraInfo = updatedStr;
         this->currentDb->updateByKey(*thisStu);
         break;
     default:

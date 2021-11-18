@@ -92,3 +92,8 @@ std::string DbSession::polishForSql(int x)
 {
 	return std::to_string(x);
 }
+
+bool DbSession::checkStringLiteral(const std::string& str)
+{
+	return str.find('\'') == std::string::npos;
+}
