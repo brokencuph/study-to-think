@@ -68,6 +68,11 @@ void MainWindow::selectDbForOpen(bool checked)
 
 void MainWindow::uiAddStudent(bool)
 {
+    
+    //Student stu;
+    //this->vStudent.push_back(stu);
+    //this->currentDb->insert(stu);
+    //QStandardItemModel* x = static_cast<QStandardItemModel*>(ui->tableStudent->model());
 }
 
 void MainWindow::uiRemoveStudent(bool)
