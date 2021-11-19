@@ -53,6 +53,7 @@ public:
 	virtual std::string getParams() const = 0;
 	// ratingToDbRepr(); // transform student grade information to db format
 	// ratingFromDbRepr();
+	static std::string typeNames[];
 };
 
 enum class CheckInType {

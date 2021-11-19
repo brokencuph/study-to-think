@@ -29,11 +29,14 @@ public:
 
     void uiRemoveStudent(bool);
 
+    void uiEditScheme(const QModelIndex&);
+
     void studentTableGridEdited(QStandardItem* item);
 
 private:
     Ui::MainWindow *ui;
     std::unique_ptr<DbSession> currentDb;
     std::vector<Student> vStudent;
+    std::vector<RatingItem> vScheme;
 };
 #endif // MAINWINDOW_H

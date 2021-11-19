@@ -59,6 +59,23 @@ void MainWindow::selectDbForOpen(bool checked)
         ui->tableStudent->setModel(stuModel);
         ui->toolButtonStudentAdd->setEnabled(true);
         ui->toolButtonStudentRemove->setEnabled(true);
+
+        this->vScheme.clear();
+        this->currentDb->retrieveAll(this->vScheme);
+        QStandardItemModel* schemeModel = new QStandardItemModel(this->vScheme.size(), 1);
+        for (int i = 0; i < this->vScheme.size(); i++)
+        {
+            QStandardItem* item = new QStandardItem(
+                QString((vScheme[i].name + 
+                    " (" + ItemInfo::typeNames[vScheme[i].item->getCurrentItemType()]
+                    + ", " + std::to_string(vScheme[i].weight) + "%)").c_str()));
+            item->setEditable(false);
+            schemeModel->setItem(i, item);
+        }
+        ui->listScheme->setModel(schemeModel);
+        connect(ui->listScheme, &QListView::doubleClicked, this, &MainWindow::uiEditScheme);
+        ui->toolButtonSchemeAdd->setEnabled(true);
+        ui->toolButtonSchemeRemove->setEnabled(true);
     }
     catch (const std::exception& e)
     {
@@ -80,6 +97,11 @@ void MainWindow::uiRemoveStudent(bool)
     //Student stu;
     //stu.id = "111";
     //this->currentDb->removeByKey(stu);
+}
+
+void MainWindow::uiEditScheme(const QModelIndex& idx)
+{
+    QMessageBox::information(this, "msg", std::to_string(idx.row()).c_str());
 }
 
 void MainWindow::studentTableGridEdited(QStandardItem* item)

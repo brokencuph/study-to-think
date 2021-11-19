@@ -11,6 +11,12 @@ const char* RatingItem::db_ColumnNames = "(item_name,item_type,weight,params)";
 std::vector<ItemOp> ItemAttendance::ops;
 std::vector<ItemOp> ItemManual::ops;
 
+std::string ItemInfo::typeNames[] =
+{
+	"Attendance",
+	"Manual"
+};
+
 void ItemOp::operator()(ItemInfo* info) const
 {
 	this->func(info);
