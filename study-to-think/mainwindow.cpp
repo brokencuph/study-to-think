@@ -3,10 +3,18 @@
 #include <QStandardItemModel>
 #include <QVariant>
 #include <algorithm>
+#include <QInputDialog>
+#include <QFormLayout>
+#include <QSpinBox>
+#include <QDialogButtonBox>
+#include <QLabel>
+#include <QLineEdit>
+#include<iostream>
 
 #include "mainwindow.h"
 #include "./ui_mainwindow.h"
 #include "db_access.h"
+
 
 
 MainWindow::MainWindow(QWidget *parent)
@@ -85,11 +93,44 @@ void MainWindow::selectDbForOpen(bool checked)
 
 void MainWindow::uiAddStudent(bool)
 {
-    
-    //Student stu;
-    //this->vStudent.push_back(stu);
-    //this->currentDb->insert(stu);
-    //QStandardItemModel* x = static_cast<QStandardItemModel*>(ui->tableStudent->model());
+    QDialog dialog(this);
+    QFormLayout form(&dialog);
+    form.addRow(new QLabel("User input:"));
+    // Value1
+    QString value1 = QString("Student ID: ");
+    QLineEdit* qlineedit1 = new QLineEdit(&dialog);
+    form.addRow(value1, qlineedit1);
+    // Value2
+    QString value2 = QString("Student Name: ");
+    QLineEdit* qlineedit2 = new QLineEdit(&dialog);
+    form.addRow(value2, qlineedit2);
+    // Add Cancel and OK button
+    QDialogButtonBox buttonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel,
+        Qt::Horizontal, &dialog);
+    form.addRow(&buttonBox);
+    QObject::connect(&buttonBox, SIGNAL(accepted()), &dialog, SLOT(accept()));
+    QObject::connect(&buttonBox, SIGNAL(rejected()), &dialog, SLOT(reject()));
+
+    // Process when OK button is clicked
+    if (dialog.exec() == QDialog::Accepted) {
+        
+        Student stu(qlineedit1->text().toUtf8().toStdString(), qlineedit2->text().toUtf8().toStdString());
+        this->vStudent.push_back(stu);
+        this->currentDb->insert(stu);
+        QStandardItemModel* x = static_cast<QStandardItemModel*>(ui->tableStudent->model());
+        QStandardItem* item[3];
+        item[0] = new QStandardItem(QString(stu.id.c_str()));
+        item[0]->setData(QVariant::fromValue(&vStudent[vStudent.size()-1]));
+        item[0]->setEditable(false);
+        item[1] = new QStandardItem(QString(stu.name.c_str()));
+        item[1]->setData(QVariant::fromValue(&vStudent[vStudent.size() - 1]));
+        item[2] = new QStandardItem(QString(stu.extraInfo.c_str()));
+        item[2]->setData(QVariant::fromValue(&vStudent[vStudent.size() - 1]));
+        
+        x->appendRow(QList<QStandardItem*>(item, item + 3));
+    }
+
+     
 }
 
 void MainWindow::uiRemoveStudent(bool)
@@ -106,7 +147,9 @@ void MainWindow::uiEditScheme(const QModelIndex& idx)
 
 void MainWindow::studentTableGridEdited(QStandardItem* item)
 {
-    Student* thisStu = item->data().value<Student*>();
+    int rowIndex = item->index().row();
+    //std::cout << rowIndex;
+    //Student* thisStu = item->data().value<Student*>();
     std::string updatedStr;
     switch (item->column())
     {
@@ -118,22 +161,22 @@ void MainWindow::studentTableGridEdited(QStandardItem* item)
         if (!DbSession::checkStringLiteral(updatedStr))
         {
             QMessageBox::critical(this, tr("Invalid Input"), tr("Input could not contain single quote."));
-            item->setText(thisStu->name.c_str());
+            item->setText(vStudent[rowIndex].name.c_str()); ;
             return;
         }
-        thisStu->name = updatedStr;
-        this->currentDb->updateByKey(*thisStu);
+        vStudent[rowIndex].name = updatedStr;
+        this->currentDb->updateByKey(vStudent[rowIndex]);
         break;
     case STUDENT_COLUMN_INFORMATION:
         updatedStr = item->text().toUtf8().toStdString();
         if (!DbSession::checkStringLiteral(updatedStr))
         {
             QMessageBox::critical(this, tr("Invalid Input"), tr("Input could not contain single quote."));
-            item->setText(thisStu->extraInfo.c_str());
+            item->setText(vStudent[rowIndex].extraInfo.c_str());
             return;
         }
-        thisStu->extraInfo = updatedStr;
-        this->currentDb->updateByKey(*thisStu);
+        vStudent[rowIndex].extraInfo = updatedStr;
+        this->currentDb->updateByKey(vStudent[rowIndex]);
         break;
     default:
         break;
