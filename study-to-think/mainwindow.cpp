@@ -13,6 +13,7 @@
 
 #include "mainwindow.h"
 #include "./ui_mainwindow.h"
+#include "manualscoredialog.h"
 #include "db_access.h"
 
 
@@ -67,6 +68,33 @@ void MainWindow::selectDbForOpen(bool checked)
         ui->tableStudent->setModel(stuModel);
         ui->toolButtonStudentAdd->setEnabled(true);
         ui->toolButtonStudentRemove->setEnabled(true);
+
+        this->vScheme.clear();
+        this->currentDb->retrieveAll(this->vScheme);
+        QStandardItemModel* schemeModel = new QStandardItemModel(this->vScheme.size(), 1);
+        for (int i = 0; i < this->vScheme.size(); i++)
+        {
+            QStandardItem* item = new QStandardItem(
+                QString((vScheme[i].name + 
+                    " (" + ItemInfo::typeNames[vScheme[i].item->getCurrentItemType()]
+                    + ", " + std::to_string(vScheme[i].weight) + "%)").c_str()));
+            item->setEditable(false);
+            schemeModel->setItem(i, item);
+        }
+        ui->listScheme->setModel(schemeModel);
+        connect(ui->listScheme, &QListView::doubleClicked, this, &MainWindow::uiEditScheme);
+        ui->toolButtonSchemeAdd->setEnabled(true);
+        ui->toolButtonSchemeRemove->setEnabled(true);
+
+        currentDb->retrieveAll(vGrade);
+        for (RatingItem& item : vScheme)
+        {
+            if (item.item->getCurrentItemType() == 1)
+            {
+                item.item->setStudents(&vStudent);
+                item.item->fillScoreFromDb(vGrade);
+            }
+        }
     }
     catch (const std::exception& e)
     {
@@ -121,6 +149,25 @@ void MainWindow::uiRemoveStudent(bool)
     //Student stu;
     //stu.id = "111";
     //this->currentDb->removeByKey(stu);
+}
+
+void MainWindow::uiEditScheme(const QModelIndex& idx)
+{
+    //QMessageBox::information(this, "msg", std::to_string(idx.row()).c_str());
+    RatingItem& item = this->vScheme[idx.row()];
+    switch (item.item->getCurrentItemType())
+    {
+    case 0:
+        QMessageBox::critical(this, tr("Error"), tr("Not implemented"));
+        break;
+    case 1:
+        {
+            ManualScoreDialog dialog(this, &vStudent, static_cast<ItemManual*>(item.item.get()));
+            dialog.exec();
+            //QMessageBox::information(this, tr("Info"), tr("finished"));
+        }
+        break;
+    }
 }
 
 void MainWindow::studentTableGridEdited(QStandardItem* item)
