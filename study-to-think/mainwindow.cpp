@@ -13,6 +13,7 @@
 
 #include "mainwindow.h"
 #include "./ui_mainwindow.h"
+#include "manualscoredialog.h"
 #include "db_access.h"
 
 
@@ -84,6 +85,16 @@ void MainWindow::selectDbForOpen(bool checked)
         connect(ui->listScheme, &QListView::doubleClicked, this, &MainWindow::uiEditScheme);
         ui->toolButtonSchemeAdd->setEnabled(true);
         ui->toolButtonSchemeRemove->setEnabled(true);
+
+        currentDb->retrieveAll(vGrade);
+        for (RatingItem& item : vScheme)
+        {
+            if (item.item->getCurrentItemType() == 1)
+            {
+                item.item->setStudents(&vStudent);
+                item.item->fillScoreFromDb(vGrade);
+            }
+        }
     }
     catch (const std::exception& e)
     {
@@ -142,7 +153,21 @@ void MainWindow::uiRemoveStudent(bool)
 
 void MainWindow::uiEditScheme(const QModelIndex& idx)
 {
-    QMessageBox::information(this, "msg", std::to_string(idx.row()).c_str());
+    //QMessageBox::information(this, "msg", std::to_string(idx.row()).c_str());
+    RatingItem& item = this->vScheme[idx.row()];
+    switch (item.item->getCurrentItemType())
+    {
+    case 0:
+        QMessageBox::critical(this, tr("Error"), tr("Not implemented"));
+        break;
+    case 1:
+        {
+            ManualScoreDialog dialog(this, &vStudent, static_cast<ItemManual*>(item.item.get()));
+            dialog.exec();
+            //QMessageBox::information(this, tr("Info"), tr("finished"));
+        }
+        break;
+    }
 }
 
 void MainWindow::studentTableGridEdited(QStandardItem* item)

@@ -38,5 +38,6 @@ private:
     std::unique_ptr<DbSession> currentDb;
     std::vector<Student> vStudent;
     std::vector<RatingItem> vScheme;
+    std::vector<StudentGradeDBO> vGrade;
 };
 #endif // MAINWINDOW_H
