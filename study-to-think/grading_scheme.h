@@ -85,13 +85,13 @@ public:
 
 class ItemManual : public ItemInfo {
 private:
-	StudentIdMap<int> studentScores;
 	const StudentVector* students = nullptr;
 	static std::vector<ItemOp> ops;
 	friend void manualEnterGrade(ItemInfo* itemInfo);
 	friend void manualUpdateGrade(ItemInfo* itemInfo);
 	friend void initializeItemManual();
 public:
+	StudentIdMap<int> studentScores;
 	virtual int getScore(const Student& student) const;
 	virtual const std::vector<ItemOp>& getOps() const;
 	virtual int getCurrentItemType() const;

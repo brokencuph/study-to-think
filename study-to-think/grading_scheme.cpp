@@ -229,16 +229,16 @@ int RatingItem::selectCallback(void* obj, int num, char** vals, char** names)
 	return 0;
 }
 
-std::unique_ptr<AbstractStudentScore> AbstractStudentScore::fromString(int type, const std::string& str)
-{
-	switch (type)
-	{
-	case 0:
-		return std::unique_ptr<AbstractStudentScore>(new AttendanceScore(str));
-	case 1:
-		return std::unique_ptr<AbstractStudentScore>(new ManualScore(str));
-	}
-}
+//std::unique_ptr<AbstractStudentScore> AbstractStudentScore::fromString(int type, const std::string& str)
+//{
+//	switch (type)
+//	{
+//	case 0:
+//		return std::unique_ptr<AbstractStudentScore>(new AttendanceScore(str));
+//	case 1:
+//		return std::unique_ptr<AbstractStudentScore>(new ManualScore(str));
+//	}
+//}
 
 ManualScore::ManualScore(const std::string& str)
 	: score(atoi(str.c_str()))
