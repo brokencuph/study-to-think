@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include <algorithm>
 #include "grading_scheme.h"
 #include "db_access.h"
 // grading_scheme.cpp: Definition of rating items.
@@ -47,6 +48,29 @@ std::string ItemManual::getParams() const
 	return "";
 }
 
+void ItemManual::setStudents(const std::vector<Student>* stus)
+{
+	this->students = stus;
+	this->studentScores.clear();
+	for (const Student& stu : *this->students)
+	{
+		this->studentScores.emplace(stu.id, 0);
+	}
+}
+
+void ItemManual::fillScoreFromDb(const std::vector<StudentGradeDBO>& vec)
+{
+	for (const StudentGradeDBO& obj : vec)
+	{
+		auto it = studentScores.find(obj.studentId);
+		if (it == studentScores.end())
+		{
+			continue;
+		}
+		it->second = atoi(obj.scoreRepr.c_str());
+	}
+}
+
 ItemManual::ItemManual(const StudentVector* students) : students(students)
 {
 
@@ -76,6 +100,16 @@ void ItemAttendance::setParams(const char* paramStr)
 std::string ItemAttendance::getParams() const
 {
 	return std::to_string(sessionNumber);
+}
+
+void ItemAttendance::setStudents(const std::vector<Student>* stus)
+{
+	this->students = stus;
+}
+
+void ItemAttendance::fillScoreFromDb(const std::vector<StudentGradeDBO>& vec)
+{
+	
 }
 
 int ItemAttendance::getSessionNumber() const
@@ -192,5 +226,46 @@ int RatingItem::selectCallback(void* obj, int num, char** vals, char** names)
 		throw std::invalid_argument("no such item type " + std::to_string(itemTypeId));
 	}
 	ratingItem->item->setParams(vals[3]);
+	return 0;
+}
+
+std::unique_ptr<AbstractStudentScore> AbstractStudentScore::fromString(int type, const std::string& str)
+{
+	switch (type)
+	{
+	case 0:
+		return std::unique_ptr<AbstractStudentScore>(new AttendanceScore(str));
+	case 1:
+		return std::unique_ptr<AbstractStudentScore>(new ManualScore(str));
+	}
+}
+
+ManualScore::ManualScore(const std::string& str)
+	: score(atoi(str.c_str()))
+{
+}
+
+std::string ManualScore::serialize() const
+{
+	return std::to_string(score);
+}
+
+const char* StudentGradeDBO::db_TableName = "student_grade";
+const char* StudentGradeDBO::db_ColumnNames = "(student_id,item_name,grade_info)";
+
+std::string StudentGradeDBO::getDbTuple() const
+{
+	return "(" + DbSession::polishForSql(studentId)
+		+ "," + DbSession::polishForSql(itemName)
+		+ "," + DbSession::polishForSql(scoreRepr)
+		+ ")";
+}
+
+int StudentGradeDBO::selectCallback(void* obj, int num, char** vals, char** names)
+{
+	StudentGradeDBO* gradeObj = static_cast<StudentGradeDBO*>(obj);
+	gradeObj->studentId = vals[0];
+	gradeObj->itemName = vals[1];
+	gradeObj->scoreRepr = vals[2];
 	return 0;
 }

@@ -7,9 +7,11 @@
 #include <map>
 #include <vector>
 #include "student.h"
+#include "db_access.h"
 
 class ItemInfo;
 
+class StudentGradeDBO;
 
 class RatingItem
 {
@@ -53,6 +55,8 @@ public:
 	virtual std::string getParams() const = 0;
 	// ratingToDbRepr(); // transform student grade information to db format
 	// ratingFromDbRepr();
+	virtual void setStudents(const std::vector<Student>* stus) = 0;
+	virtual void fillScoreFromDb(const std::vector<StudentGradeDBO>& vec) = 0;
 	static std::string typeNames[];
 };
 
@@ -65,6 +69,7 @@ enum class CheckInType {
 class ItemAttendance : public ItemInfo {
 private:
 	StudentIdMap<std::vector<CheckInType>> studentAttendance;
+	const StudentVector* students = nullptr;
 	int sessionNumber = 0; // how many teaching sessions
 	static std::vector<ItemOp> ops;
 public:
@@ -73,6 +78,8 @@ public:
 	virtual int getCurrentItemType() const;
 	virtual void setParams(const char* paramStr);
 	virtual std::string getParams() const;
+	virtual void setStudents(const std::vector<Student>* stus);
+	virtual void fillScoreFromDb(const std::vector<StudentGradeDBO>& vec);
 	int getSessionNumber() const;
 };
 
@@ -90,13 +97,52 @@ public:
 	virtual int getCurrentItemType() const;
 	virtual void setParams(const char* paramStr);
 	virtual std::string getParams() const;
+	virtual void setStudents(const std::vector<Student>* stus);
+	virtual void fillScoreFromDb(const std::vector<StudentGradeDBO>& vec);
 	ItemManual(const StudentVector* students);
 	ItemManual() = default;
 };
 
 // void manualEnterGrade(ItemInfo* itemInfo);
 
+class AbstractStudentScore
+{
+public:
+	virtual std::string serialize() const = 0;
+	static std::unique_ptr<AbstractStudentScore> fromString(int type, const std::string& str);
+};
 
+class AttendanceScore : public AbstractStudentScore
+{
+public:
+	explicit AttendanceScore(const std::string& str);
+	virtual std::string serialize() const;
+};
+
+class ManualScore : public AbstractStudentScore
+{
+private:
+	int score;
+public:
+	explicit ManualScore(const std::string& str);
+	virtual std::string serialize() const;
+};
+
+class StudentGradeDBO
+{
+public:
+	static const char* db_TableName;
+	static const char* db_ColumnNames;
+
+	StudentIdType studentId;
+	std::string itemName;
+	//std::unique_ptr<AbstractStudentScore> score;
+	std::string scoreRepr;
+
+	std::string getDbTuple() const;
+
+	static int selectCallback(void*, int, char**, char**);
+};
 
 void initializeItemAttendance();
 
