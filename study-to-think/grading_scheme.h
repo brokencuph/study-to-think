@@ -133,6 +133,7 @@ class StudentGradeDBO
 public:
 	static const char* db_TableName;
 	static const char* db_ColumnNames;
+	static const char* db_UpsertColumn;
 
 	StudentIdType studentId;
 	std::string itemName;

@@ -252,6 +252,7 @@ std::string ManualScore::serialize() const
 
 const char* StudentGradeDBO::db_TableName = "student_grade";
 const char* StudentGradeDBO::db_ColumnNames = "(student_id,item_name,grade_info)";
+const char* StudentGradeDBO::db_UpsertColumn = "grade_info";
 
 std::string StudentGradeDBO::getDbTuple() const
 {

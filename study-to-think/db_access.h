@@ -65,6 +65,29 @@ public:
 	}
 
 	template <class T>
+	void upsert(const T& obj)
+	{
+		using std::stringstream;
+		stringstream ss;
+		ss << "INSERT INTO " << T::db_TableName
+			<< " VALUES " << obj.getDbTuple()
+			<< " ON CONFLICT DO UPDATE SET "
+			<< T::db_UpsertColumn << " = excluded."
+			<< T::db_UpsertColumn;
+#ifdef SQL_DEBUG
+		std::cerr << ss.str() << std::endl;
+#endif
+		char* errmsg = (char*)1;
+		sqlite3_exec(conn, ss.str().c_str(), nullptr, nullptr, &errmsg);
+		if (errmsg != nullptr)
+		{
+			std::string msg(errmsg);
+			sqlite3_free(errmsg);
+			throw std::runtime_error(std::string(msg));
+		}
+	}
+
+	template <class T>
 	void updateByKey(const T& obj)
 	{
 		using std::stringstream;
