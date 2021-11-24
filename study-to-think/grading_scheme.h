@@ -9,6 +9,8 @@
 #include "student.h"
 #include "db_access.h"
 
+class Student;
+
 class ItemInfo;
 
 class StudentGradeDBO;

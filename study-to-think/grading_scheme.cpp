@@ -79,6 +79,7 @@ ItemManual::ItemManual(const StudentVector* students) : students(students)
 int ItemAttendance::getScore(const Student& student) const
 {
 	// TODO: implement the logic
+	return 0;
 	throw std::runtime_error("not implemented");
 }
 

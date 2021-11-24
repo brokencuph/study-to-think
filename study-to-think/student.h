@@ -6,9 +6,12 @@
 #include <string>
 #include <map>
 #include <vector>
+//#include "grading_scheme.h"
 
 typedef std::string ExtraStudentInfo;
 typedef std::string StudentIdType;
+
+class RatingItem;
 
 class Student {
 private:
@@ -25,7 +28,7 @@ public:
 	Student() = default;
 	// toDbRepr()
 	// fromDbRepr()
-
+	int getTotalScore(const std::vector<RatingItem>& items) const;
 	std::string getDbTuple() const;
 	std::string getDbKeyValue() const;
 	static int selectCallback(void*, int, char**, char**);
