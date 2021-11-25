@@ -9,6 +9,8 @@
 #include "student.h"
 #include "db_access.h"
 
+class Student;
+
 class ItemInfo;
 
 class StudentGradeDBO;
@@ -133,6 +135,7 @@ class StudentGradeDBO
 public:
 	static const char* db_TableName;
 	static const char* db_ColumnNames;
+	static const char* db_UpsertColumn;
 
 	StudentIdType studentId;
 	std::string itemName;

@@ -89,6 +89,32 @@ TEST(DbTest, RatingItemCRUD)
 	SUCCEED();
 }
 
+TEST(DbTest, StudentGradeDBOUpsert)
+{
+	COPY_DB_FILE("test_crud");
+	DbSession testSession("test_crud_copy.db");
+	StudentGradeDBO g1;
+	g1.itemName = "Check In";
+	g1.studentId = "1809853J-I011-0065";
+	g1.scoreRepr = "1111";
+	testSession.upsert(g1);
+	std::vector<StudentGradeDBO> lstGrade;
+	testSession.retrieveAll(lstGrade);
+	ASSERT_EQ(lstGrade.size(), 1);
+	ASSERT_EQ(lstGrade[0].itemName, g1.itemName);
+	ASSERT_EQ(lstGrade[0].studentId, g1.studentId);
+	ASSERT_EQ(lstGrade[0].scoreRepr, g1.scoreRepr);
+	g1.scoreRepr = "2222";
+	testSession.upsert(g1);
+	lstGrade.clear();
+	testSession.retrieveAll(lstGrade);
+	ASSERT_EQ(lstGrade.size(), 1);
+	ASSERT_EQ(lstGrade[0].itemName, g1.itemName);
+	ASSERT_EQ(lstGrade[0].studentId, g1.studentId);
+	ASSERT_EQ(lstGrade[0].scoreRepr, g1.scoreRepr);
+	SUCCEED();
+}
+
 
 int main(int argc, char** argv)
 {

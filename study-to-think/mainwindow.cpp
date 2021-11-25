@@ -44,39 +44,13 @@ void MainWindow::selectDbForOpen(bool checked)
             this, tr("Open DB"), QString(), tr("SQLite DB File (*.db)"));
         QMessageBox::information(this, "hahaha", fileName);
         this->currentDb = std::make_unique<DbSession>(fileName.toStdString().c_str());
-        this->vStudent.clear();
-        this->currentDb->retrieveAll(this->vStudent);
-        QStandardItemModel* stuModel = new QStandardItemModel(this->vStudent.size(), 3);
-        for (int i = 0; i < this->vStudent.size(); i++)
-        {
-            QStandardItem* item[3];
-            item[0] = new QStandardItem(QString(vStudent[i].id.c_str()));
-            item[0]->setData(QVariant::fromValue(&vStudent[i]));
-            item[0]->setEditable(false);
-            item[1] = new QStandardItem(QString(vStudent[i].name.c_str()));
-            item[1]->setData(QVariant::fromValue(&vStudent[i]));
-            item[2] = new QStandardItem(QString(vStudent[i].extraInfo.c_str()));
-            item[2]->setData(QVariant::fromValue(&vStudent[i]));
-            stuModel->setItem(i, 0, item[0]);
-            stuModel->setItem(i, 1, item[1]);
-            stuModel->setItem(i, 2, item[2]);
-        }
-        stuModel->setHeaderData(0, Qt::Horizontal, QString("Student ID"));
-        stuModel->setHeaderData(1, Qt::Horizontal, QString("Student Name"));
-        stuModel->setHeaderData(2, Qt::Horizontal, QString("Information"));
-        
-        connect(stuModel, &QStandardItemModel::itemChanged, this, &MainWindow::studentTableGridEdited);
-        ui->tableStudent->setModel(stuModel);
-        ui->toolButtonStudentAdd->setEnabled(true);
-        ui->toolButtonStudentRemove->setEnabled(true);
-
         this->vScheme.clear();
         this->currentDb->retrieveAll(this->vScheme);
         QStandardItemModel* schemeModel = new QStandardItemModel(this->vScheme.size(), 1);
         for (int i = 0; i < this->vScheme.size(); i++)
         {
             QStandardItem* item = new QStandardItem(
-                QString((vScheme[i].name + 
+                QString((vScheme[i].name +
                     " (" + ItemInfo::typeNames[vScheme[i].item->getCurrentItemType()]
                     + ", " + std::to_string(vScheme[i].weight) + "%)").c_str()));
             item->setEditable(false);
@@ -87,6 +61,9 @@ void MainWindow::selectDbForOpen(bool checked)
         ui->toolButtonSchemeAdd->setEnabled(true);
         ui->toolButtonSchemeRemove->setEnabled(true);
 
+
+        this->vStudent.clear();
+        this->currentDb->retrieveAll(this->vStudent);
         currentDb->retrieveAll(vGrade);
         for (RatingItem& item : vScheme)
         {
@@ -96,6 +73,34 @@ void MainWindow::selectDbForOpen(bool checked)
                 item.item->fillScoreFromDb(vGrade);
             }
         }
+
+        QStandardItemModel* stuModel = new QStandardItemModel(this->vStudent.size(), 4);
+        for (int i = 0; i < this->vStudent.size(); i++)
+        {
+            QStandardItem* item[4];
+            item[0] = new QStandardItem(QString(vStudent[i].id.c_str()));
+            item[0]->setData(QVariant::fromValue(&vStudent[i]));
+            item[0]->setEditable(false);
+            item[1] = new QStandardItem(QString(vStudent[i].name.c_str()));
+            item[1]->setData(QVariant::fromValue(&vStudent[i]));
+            item[2] = new QStandardItem(QString(vStudent[i].extraInfo.c_str()));
+            item[2]->setData(QVariant::fromValue(&vStudent[i]));
+            item[3] = new QStandardItem(QString(std::to_string(vStudent[i].getTotalScore(vScheme)).c_str()));
+            item[3]->setEditable(false);
+            stuModel->setItem(i, 0, item[0]);
+            stuModel->setItem(i, 1, item[1]);
+            stuModel->setItem(i, 2, item[2]);
+            stuModel->setItem(i, 3, item[3]);
+        }
+        stuModel->setHeaderData(0, Qt::Horizontal, QString("Student ID"));
+        stuModel->setHeaderData(1, Qt::Horizontal, QString("Student Name"));
+        stuModel->setHeaderData(2, Qt::Horizontal, QString("Information"));
+        
+        connect(stuModel, &QStandardItemModel::itemChanged, this, &MainWindow::studentTableGridEdited);
+        ui->tableStudent->setModel(stuModel);
+        ui->toolButtonStudentAdd->setEnabled(true);
+        ui->toolButtonStudentRemove->setEnabled(true);
+
     }
     catch (const std::exception& e)
     {
@@ -181,7 +186,7 @@ void MainWindow::uiEditScheme(const QModelIndex& idx)
         break;
     case 1:
         {
-            ManualScoreDialog dialog(this, &vStudent, static_cast<ItemManual*>(item.item.get()));
+            ManualScoreDialog dialog(this, &vStudent, static_cast<ItemManual*>(item.item.get()), item.name, this->currentDb.get());
             dialog.exec();
             //QMessageBox::information(this, tr("Info"), tr("finished"));
         }

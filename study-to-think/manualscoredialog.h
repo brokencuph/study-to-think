@@ -15,13 +15,16 @@ class ManualScoreDialog : public QDialog
     Q_OBJECT
 
 public:
-    explicit ManualScoreDialog(QWidget *parent, const std::vector<Student>* vStudent, ItemManual* scoreStore);
+    explicit ManualScoreDialog(QWidget *parent, const std::vector<Student>* vStudent, ItemManual* scoreStore, std::string itemName, DbSession* currentDb);
     ~ManualScoreDialog();
 
+    void scoreTableGridEdited(QStandardItem* item);
 private:
     Ui::ManualScoreDialog *ui;
     const std::vector<Student>* vStudent;
     ItemManual* scoreStore;
+    std::string itemName;
+    DbSession* currentDb;
 };
 
 #endif // MANUALSCOREDIALOG_H
