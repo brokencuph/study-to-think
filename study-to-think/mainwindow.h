@@ -25,6 +25,12 @@ public:
 
     void selectDbForOpen(bool checked);
 
+    void newDb(bool checked);
+
+    void uiUpdateForOpeningDb();
+
+    void uiUpdateForClosing();
+
     void uiAddStudent(bool);
 
     void uiRemoveStudent(bool);
