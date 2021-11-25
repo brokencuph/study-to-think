@@ -131,7 +131,7 @@ void MainWindow::uiAddStudent(bool)
     // Process when OK button is clicked
     if (dialog.exec() == QDialog::Accepted) {
         
-        Student stu(qlineedit1->text().toUtf8().toStdString(), qlineedit2->text().toUtf8().toStdString());
+        Student stu(qlineedit2->text().toUtf8().toStdString(), qlineedit1->text().toUtf8().toStdString());
         this->vStudent.push_back(stu);
         this->currentDb->insert(stu);
         QStandardItemModel* x = static_cast<QStandardItemModel*>(ui->tableStudent->model());
