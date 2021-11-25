@@ -10,7 +10,8 @@
 #include <QLabel>
 #include <QLineEdit>
 #include<iostream>
-
+#include<set>
+#include<iterator>
 #include "mainwindow.h"
 #include "./ui_mainwindow.h"
 #include "manualscoredialog.h"
@@ -146,9 +147,27 @@ void MainWindow::uiAddStudent(bool)
 
 void MainWindow::uiRemoveStudent(bool)
 {
-    //Student stu;
-    //stu.id = "111";
-    //this->currentDb->removeByKey(stu);
+    std::set<int, std::greater<int> > s1;
+    std::set<int, std::greater<int>>::iterator s1_it;
+    s1_it = s1.begin();
+    std::vector<Student>::iterator v_it_1;
+    auto selected = ui->tableStudent->selectionModel()->selectedIndexes();
+    for (const auto& x : selected)
+    {
+
+        s1.insert(x.row());
+    }
+    for (auto i = s1.begin(); i != s1.end(); i++)
+    {
+        auto rowIndex = *i;
+        QStandardItemModel* x = static_cast<QStandardItemModel*>(ui->tableStudent->model());
+        x->removeRow(rowIndex);
+        this->currentDb->removeByKey(vStudent[rowIndex]);
+        v_it_1 = vStudent.begin();
+        vStudent.erase(v_it_1 + rowIndex);
+
+    }
+
 }
 
 void MainWindow::uiEditScheme(const QModelIndex& idx)
