@@ -27,7 +27,8 @@ static const char* createCommands[] =
 	"item_name"	TEXT NOT NULL,
 	"grade_info"	TEXT,
 	FOREIGN KEY("item_name") REFERENCES "rating_item"("item_name"),
-	FOREIGN KEY("student_id") REFERENCES "student"("student_id")))"
+	FOREIGN KEY("student_id") REFERENCES "student"("student_id"),
+	UNIQUE("student_id","item_name")))"
 };
 
 void DbSession::open(const char fileName[])
