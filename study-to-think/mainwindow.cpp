@@ -49,7 +49,7 @@ void MainWindow::selectDbForOpen(bool checked)
         {
             return;
         }
-        this->currentDb = std::make_unique<DbSession>(fileName.toLocal8Bit().constData());
+        this->currentDb = std::make_unique<DbSession>(fileName.toUtf8().constData());
         this->uiUpdateForOpeningDb();
     }
     catch (const std::exception& e)
@@ -72,7 +72,7 @@ void MainWindow::newDb(bool checked)
         {
             QFile::remove(fileName);
         }
-        this->currentDb = std::make_unique<DbSession>(fileName.toLocal8Bit().constData());
+        this->currentDb = std::make_unique<DbSession>(fileName.toUtf8().constData());
         this->uiUpdateForOpeningDb();
     }
     catch (const std::exception& e)
