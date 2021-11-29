@@ -64,7 +64,7 @@ public:
 
 enum class CheckInType {
 	NORMAL,
-	LATE,
+	LATEANDLEAVEEARLY,
 	ABSENT
 };
 

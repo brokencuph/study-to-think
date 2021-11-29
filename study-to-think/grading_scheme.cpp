@@ -79,6 +79,35 @@ ItemManual::ItemManual(const StudentVector* students) : students(students)
 int ItemAttendance::getScore(const Student& student) const
 {
 	// TODO: implement the logic
+	// modify by ZHANG Xiubo 2021-11-25
+	StudentIdType selected_ID;
+	selected_ID = student.id;
+	int numberOfLateAndLeaveEarly = 0;
+	int numberOfAbsentOriginal = 0;
+	int numberOfAbsentWithTranslate = 0;
+	double absentRate = 0.0;
+	for (auto i = (studentAttendance.at(selected_ID)).begin(); i != (studentAttendance.at(selected_ID).end()); i++)
+	{
+		if (*i == CheckInType::LATEANDLEAVEEARLY)
+			numberOfLateAndLeaveEarly++;
+		if (*i == CheckInType::ABSENT)
+			numberOfAbsentOriginal++;
+
+
+	}
+	numberOfAbsentWithTranslate = numberOfAbsentOriginal + numberOfLateAndLeaveEarly / 3;
+	absentRate = 1.0 * numberOfAbsentWithTranslate / (1.0 * sessionNumber);
+	if (absentRate < 0.1)
+		return 100;
+	else if (absentRate >= 0.1 && absentRate <= 0.15)
+		return 70;
+	else if (absentRate > 0.15 && absentRate <= 0.3)
+		return 20;
+	else
+	{
+		throw std::runtime_error("T letter");
+		//TO be continue by the help of 1809853ji011006
+	}
 	return 0;
 	throw std::runtime_error("not implemented");
 }
