@@ -43,6 +43,8 @@ public:
 
     void syncRatingItems();
 
+    void updateOverviewTab();
+
 private:
     Ui::MainWindow *ui;
     std::unique_ptr<DbSession> currentDb;

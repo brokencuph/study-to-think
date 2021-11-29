@@ -131,6 +131,25 @@
         </item>
        </layout>
       </widget>
+      <widget class="QWidget" name="tabOverview">
+       <attribute name="title">
+        <string>Overview</string>
+       </attribute>
+       <layout class="QHBoxLayout" name="horizontalLayout_4">
+        <item>
+         <widget class="QWidget" name="widget_3" native="true">
+          <layout class="QVBoxLayout" name="verticalLayout_3">
+           <item>
+            <widget class="QComboBox" name="comboOverview"/>
+           </item>
+           <item>
+            <widget class="QWidget" name="widgetOverview" native="true"/>
+           </item>
+          </layout>
+         </widget>
+        </item>
+       </layout>
+      </widget>
      </widget>
     </item>
    </layout>
