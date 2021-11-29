@@ -11,6 +11,7 @@
 #include <QLineEdit>
 #include <QDialogButtonBox>
 int First_enter = 0;
+int Accept_switch = 0;
 AttendanceScoreDialog::AttendanceScoreDialog(QWidget *parent, const std::vector<Student>* _vStudent) :
     QDialog(parent),
     ui(new Ui::AttendanceScoreDialog)
@@ -18,6 +19,7 @@ AttendanceScoreDialog::AttendanceScoreDialog(QWidget *parent, const std::vector<
     const std::vector<Student>& vStudent = *_vStudent;
     if (!First_enter)
     {
+
         QDialog dialog(this);
         QFormLayout form(&dialog);
         form.addRow(new QLabel("Please enter the number of class of this course:"));
@@ -28,7 +30,9 @@ AttendanceScoreDialog::AttendanceScoreDialog(QWidget *parent, const std::vector<
         form.addRow(&buttonBox);
         QObject::connect(&buttonBox, SIGNAL(accepted()), &dialog, SLOT(accept()));
         QObject::connect(&buttonBox, SIGNAL(rejected()), &dialog, SLOT(reject()));
-        if (dialog.exec() == QDialog::Accepted) {
+        Accept_switch = dialog.exec();
+        if (Accept_switch) {
+            Accept_switch = 1;
             First_enter++; // will not enter next window until enter the number of class
             ui->setupUi(this);
             QStringList attendanceFormList;
@@ -36,15 +40,20 @@ AttendanceScoreDialog::AttendanceScoreDialog(QWidget *parent, const std::vector<
             attendanceFormList << "Normal" << "Late" << "Earlyleave" << "Absent";
             ui->comboBox->addItems(attendanceFormList);
         }
-       
+        else
+        {
+            
+            this->close();
+        }
         
     }
-    ui->setupUi(this);
-    QStringList attendanceFormList;
-    QStringList ClassIndexList;
-    attendanceFormList << "Normal" << "Late" << "Earlyleave" << "Absent";
-    ui->comboBox->addItems(attendanceFormList);
-    
+    if (Accept_switch) {
+        ui->setupUi(this);
+        QStringList attendanceFormList;
+        QStringList ClassIndexList;
+        attendanceFormList << "Normal" << "Late" << "Earlyleave" << "Absent";
+        ui->comboBox->addItems(attendanceFormList);
+    }
     
 }
 
