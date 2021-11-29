@@ -15,12 +15,10 @@
 #include "mainwindow.h"
 #include "./ui_mainwindow.h"
 #include "manualscoredialog.h"
+#include"attendancescoredialog.h"
 #include "db_access.h"
 
-static const QStringList overviewNames =
-{
-    QObject::tr("Distribution")
-};
+
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -29,8 +27,6 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
     
-    ui->comboOverview->addItems(overviewNames);
-
     connect(ui->actionOpen, &QAction::triggered, this, &MainWindow::selectDbForOpen);
     connect(ui->actionNew, &QAction::triggered, this, &MainWindow::newDb);
     connect(ui->actionClose, &QAction::triggered, this, &MainWindow::uiUpdateForClosing);
@@ -231,8 +227,12 @@ void MainWindow::uiEditScheme(const QModelIndex& idx)
     switch (item.item->getCurrentItemType())
     {
     case 0:
-        QMessageBox::critical(this, tr("Error"), tr("Not implemented"));
-        break;
+    {
+        //QMessageBox::critical(this, tr("Error"), tr("Not implemented"));
+        AttendanceScoreDialog dialog(this, &vStudent);
+        dialog.exec();
+        break; 
+    }
     case 1:
         {
             ManualScoreDialog dialog(this, &vStudent, static_cast<ItemManual*>(item.item.get()), item.name, this->currentDb.get());
@@ -296,8 +296,11 @@ void MainWindow::syncRatingItems()
 {
     for (auto& item : vScheme)
     {
-        item.item->setStudents(&vStudent);
-        item.item->fillScoreFromDb(vGrade);
+        if (item.item->getCurrentItemType() == 1)
+        {
+            item.item->setStudents(&vStudent);
+            item.item->fillScoreFromDb(vGrade);
+        }
     }
 }
 
