@@ -4,6 +4,7 @@
 #include <cctype>
 #include "manualscoredialog.h"
 #include "ui_manualscoredialog.h"
+#include "mainwindow.h"
 
 
 ManualScoreDialog::ManualScoreDialog(QWidget* parent,
@@ -35,6 +36,8 @@ ManualScoreDialog::ManualScoreDialog(QWidget* parent,
         model->setItem(i, 2, item[2]);
     }
     connect(model, &QStandardItemModel::itemChanged, this, &ManualScoreDialog::scoreTableGridEdited);
+    connect(this, &ManualScoreDialog::scoreChanged,
+        static_cast<MainWindow*>(parent), &MainWindow::updateTotalScore);
     ui->tableView->setModel(model);
 }
 
@@ -69,4 +72,5 @@ void ManualScoreDialog::scoreTableGridEdited(QStandardItem* item)
     gradeDbo.itemName = this->itemName;
     gradeDbo.scoreRepr = std::to_string(newScore);
     currentDb->upsert(gradeDbo);
+    emit scoreChanged();
 }

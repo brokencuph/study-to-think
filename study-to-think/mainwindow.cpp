@@ -124,22 +124,22 @@ void MainWindow::uiUpdateForOpeningDb()
         item[1]->setData(QVariant::fromValue(&vStudent[i]));
         item[2] = new QStandardItem(QString(vStudent[i].extraInfo.c_str()));
         item[2]->setData(QVariant::fromValue(&vStudent[i]));
-        item[3] = new QStandardItem(QString(std::to_string(vStudent[i].getTotalScore(vScheme)).c_str()));
-        item[3]->setEditable(false);
+        //item[3] = new QStandardItem(QString(std::to_string(vStudent[i].getTotalScore(vScheme)).c_str()));
+        //item[3]->setEditable(false);
         stuModel->setItem(i, 0, item[0]);
         stuModel->setItem(i, 1, item[1]);
         stuModel->setItem(i, 2, item[2]);
-        stuModel->setItem(i, 3, item[3]);
+        //stuModel->setItem(i, 3, item[3]);
     }
-    stuModel->setHeaderData(0, Qt::Horizontal, QString("Student ID"));
-    stuModel->setHeaderData(1, Qt::Horizontal, QString("Student Name"));
-    stuModel->setHeaderData(2, Qt::Horizontal, QString("Information"));
-
+    stuModel->setHeaderData(0, Qt::Horizontal, tr("Student ID"));
+    stuModel->setHeaderData(1, Qt::Horizontal, tr("Student Name"));
+    stuModel->setHeaderData(2, Qt::Horizontal, tr("Information"));
+    stuModel->setHeaderData(3, Qt::Horizontal, tr("Total Score"));
     connect(stuModel, &QStandardItemModel::itemChanged, this, &MainWindow::studentTableGridEdited);
     ui->tableStudent->setModel(stuModel);
     ui->toolButtonStudentAdd->setEnabled(true);
     ui->toolButtonStudentRemove->setEnabled(true);
-
+    updateTotalScore();
 
 }
 
@@ -275,6 +275,17 @@ void MainWindow::studentTableGridEdited(QStandardItem* item)
         break;
     default:
         break;
+    }
+}
+
+void MainWindow::updateTotalScore()
+{
+    auto model = static_cast<QStandardItemModel*>(ui->tableStudent->model());
+    for (size_t i = 0; i < vStudent.size(); i++)
+    {
+        QStandardItem* item = new QStandardItem(QString(std::to_string(vStudent[i].getTotalScore(vScheme)).c_str()));
+        item->setEditable(false);
+        model->setItem(i, 3, item);
     }
 }
 

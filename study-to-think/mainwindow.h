@@ -39,6 +39,8 @@ public:
 
     void studentTableGridEdited(QStandardItem* item);
 
+    void updateTotalScore();
+
 private:
     Ui::MainWindow *ui;
     std::unique_ptr<DbSession> currentDb;

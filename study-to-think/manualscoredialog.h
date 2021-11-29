@@ -25,6 +25,9 @@ private:
     ItemManual* scoreStore;
     std::string itemName;
     DbSession* currentDb;
+
+signals:
+    void scoreChanged();
 };
 
 #endif // MANUALSCOREDIALOG_H
