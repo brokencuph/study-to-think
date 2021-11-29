@@ -104,14 +104,7 @@ void MainWindow::uiUpdateForOpeningDb()
     this->vStudent.clear();
     this->currentDb->retrieveAll(this->vStudent);
     currentDb->retrieveAll(vGrade);
-    for (RatingItem& item : vScheme)
-    {
-        if (item.item->getCurrentItemType() == 1)
-        {
-            item.item->setStudents(&vStudent);
-            item.item->fillScoreFromDb(vGrade);
-        }
-    }
+    syncRatingItems();
 
     QStandardItemModel* stuModel = new QStandardItemModel(this->vStudent.size(), 4);
     for (int i = 0; i < this->vStudent.size(); i++)
@@ -192,8 +185,7 @@ void MainWindow::uiAddStudent(bool)
         
         x->appendRow(QList<QStandardItem*>(item, item + 3));
     }
-
-     
+    syncRatingItems();
 }
 
 void MainWindow::uiRemoveStudent(bool)
@@ -286,6 +278,18 @@ void MainWindow::updateTotalScore()
         QStandardItem* item = new QStandardItem(QString(std::to_string(vStudent[i].getTotalScore(vScheme)).c_str()));
         item->setEditable(false);
         model->setItem(i, 3, item);
+    }
+}
+
+void MainWindow::syncRatingItems()
+{
+    for (auto& item : vScheme)
+    {
+        if (item.item->getCurrentItemType() == 1)
+        {
+            item.item->setStudents(&vStudent);
+            item.item->fillScoreFromDb(vGrade);
+        }
     }
 }
 

@@ -41,6 +41,8 @@ public:
 
     void updateTotalScore();
 
+    void syncRatingItems();
+
 private:
     Ui::MainWindow *ui;
     std::unique_ptr<DbSession> currentDb;
