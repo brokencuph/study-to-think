@@ -291,11 +291,8 @@ void MainWindow::syncRatingItems()
 {
     for (auto& item : vScheme)
     {
-        if (item.item->getCurrentItemType() == 1)
-        {
-            item.item->setStudents(&vStudent);
-            item.item->fillScoreFromDb(vGrade);
-        }
+        item.item->setStudents(&vStudent);
+        item.item->fillScoreFromDb(vGrade);
     }
 }
 

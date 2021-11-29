@@ -49,6 +49,8 @@ struct ItemOp {
 class ItemInfo
 {
 public:
+	virtual void setItemName(std::string itemName) = 0;
+	virtual std::string getItemName() const = 0;
 	virtual int getScore(const Student& student) const = 0;
 	//virtual void ratingInitiate() = 0;
 	virtual const std::vector<ItemOp>& getOps() const = 0;
@@ -70,11 +72,14 @@ enum class CheckInType {
 
 class ItemAttendance : public ItemInfo {
 private:
+	std::string itemName;
 	StudentIdMap<std::vector<CheckInType>> studentAttendance;
 	const StudentVector* students = nullptr;
 	int sessionNumber = 0; // how many teaching sessions
 	static std::vector<ItemOp> ops;
 public:
+	virtual void setItemName(std::string itemName);
+	virtual std::string getItemName() const;
 	virtual int getScore(const Student& student) const;
 	virtual const std::vector<ItemOp>& getOps() const;
 	virtual int getCurrentItemType() const;
@@ -87,6 +92,7 @@ public:
 
 class ItemManual : public ItemInfo {
 private:
+	std::string itemName;
 	const StudentVector* students = nullptr;
 	static std::vector<ItemOp> ops;
 	friend void manualEnterGrade(ItemInfo* itemInfo);
@@ -94,6 +100,8 @@ private:
 	friend void initializeItemManual();
 public:
 	StudentIdMap<int> studentScores;
+	virtual void setItemName(std::string itemName);
+	virtual std::string getItemName() const;
 	virtual int getScore(const Student& student) const;
 	virtual const std::vector<ItemOp>& getOps() const;
 	virtual int getCurrentItemType() const;

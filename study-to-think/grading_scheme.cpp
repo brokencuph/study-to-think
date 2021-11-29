@@ -23,6 +23,16 @@ void ItemOp::operator()(ItemInfo* info) const
 	this->func(info);
 }
 
+void ItemManual::setItemName(std::string itemName)
+{
+	this->itemName = itemName;
+}
+
+std::string ItemManual::getItemName() const
+{
+	return itemName;
+}
+
 int ItemManual::getScore(const Student& student) const
 {
 	return this->studentScores.at(student.id);
@@ -62,6 +72,10 @@ void ItemManual::fillScoreFromDb(const std::vector<StudentGradeDBO>& vec)
 {
 	for (const StudentGradeDBO& obj : vec)
 	{
+		if (getItemName() != obj.itemName)
+		{
+			continue;
+		}
 		auto it = studentScores.find(obj.studentId);
 		if (it == studentScores.end())
 		{
@@ -74,6 +88,16 @@ void ItemManual::fillScoreFromDb(const std::vector<StudentGradeDBO>& vec)
 ItemManual::ItemManual(const StudentVector* students) : students(students)
 {
 
+}
+
+void ItemAttendance::setItemName(std::string itemName)
+{
+	this->itemName = std::move(itemName);
+}
+
+std::string ItemAttendance::getItemName() const
+{
+	return itemName;
 }
 
 int ItemAttendance::getScore(const Student& student) const
@@ -135,11 +159,43 @@ std::string ItemAttendance::getParams() const
 void ItemAttendance::setStudents(const std::vector<Student>* stus)
 {
 	this->students = stus;
+	this->studentAttendance.clear();
+	for (const Student& stu : *this->students)
+	{
+		if (sessionNumber <= 0)
+		{
+			this->studentAttendance.emplace(stu.id, std::vector<CheckInType>());
+		}
+		else
+		{
+			this->studentAttendance.emplace(stu.id, std::vector<CheckInType>(sessionNumber, CheckInType::NORMAL));
+		}
+	}
 }
 
 void ItemAttendance::fillScoreFromDb(const std::vector<StudentGradeDBO>& vec)
 {
-	
+	for (const auto& dbo : vec)
+	{
+		if (getItemName() != dbo.itemName)
+		{
+			continue;
+		}
+		auto it = studentAttendance.find(dbo.studentId);
+		if (it == studentAttendance.end())
+		{
+			continue;
+		}
+		// the format of repr: <CheckInType1> <CheckInType2> ... <CheckInTypeN>
+		std::stringstream ss(dbo.scoreRepr);
+		it->second = std::vector<CheckInType>(sessionNumber);
+		for (int i = 0; i < sessionNumber; i++)
+		{
+			int tmp;
+			ss >> tmp;
+			it->second[i] = (CheckInType)tmp;
+		}
+	}
 }
 
 int ItemAttendance::getSessionNumber() const
@@ -255,6 +311,7 @@ int RatingItem::selectCallback(void* obj, int num, char** vals, char** names)
 	default:
 		throw std::invalid_argument("no such item type " + std::to_string(itemTypeId));
 	}
+	ratingItem->item->setItemName(ratingItem->name);
 	ratingItem->item->setParams(vals[3]);
 	return 0;
 }
