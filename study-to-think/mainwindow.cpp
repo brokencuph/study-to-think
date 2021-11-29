@@ -142,8 +142,14 @@ void MainWindow::uiUpdateForClosing()
     ui->toolButtonStudentRemove->setEnabled(false);
     ui->toolButtonSchemeAdd->setEnabled(false);
     ui->toolButtonSchemeRemove->setEnabled(false);
+    disconnect(static_cast<QStandardItemModel*>(ui->tableStudent->model()), nullptr, nullptr, nullptr);
+    disconnect(ui->listScheme, nullptr, nullptr, nullptr);
+    auto modelStudent = ui->tableStudent->model();
+    auto modelScheme = ui->listScheme->model();
     ui->tableStudent->setModel(nullptr);
     ui->listScheme->setModel(nullptr);
+    delete modelStudent;
+    delete modelScheme;
     this->currentDb = nullptr;
 }
 

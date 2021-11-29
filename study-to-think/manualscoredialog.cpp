@@ -43,6 +43,9 @@ ManualScoreDialog::ManualScoreDialog(QWidget* parent,
 
 ManualScoreDialog::~ManualScoreDialog()
 {
+    auto model = ui->tableView->model();
+    ui->tableView->setModel(nullptr);
+    delete model;
     delete ui;
 }
 
