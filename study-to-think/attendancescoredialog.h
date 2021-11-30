@@ -13,6 +13,8 @@ class AttendanceScoreDialog : public QDialog
     Q_OBJECT
 
 public:
+    bool willKeep = true;
+
     explicit AttendanceScoreDialog(QWidget *parent , const std::vector<Student>* vStudent);
     
     ~AttendanceScoreDialog();

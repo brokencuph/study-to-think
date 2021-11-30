@@ -73,8 +73,7 @@ AttendanceScoreDialog::AttendanceScoreDialog(QWidget *parent, const std::vector<
         }
         else
         {
-            
-            this->close();
+            willKeep = false;
         }
         
     }
