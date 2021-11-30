@@ -9,6 +9,9 @@
 #include <QDialogButtonBox>
 #include <QLabel>
 #include <QLineEdit>
+#include <QChart>
+#include <QChartView>
+#include <QLineSeries>
 #include<iostream>
 #include<set>
 #include<iterator>
@@ -138,7 +141,7 @@ void MainWindow::uiUpdateForOpeningDb()
     ui->toolButtonStudentAdd->setEnabled(true);
     ui->toolButtonStudentRemove->setEnabled(true);
     updateTotalScore();
-
+    updateOverviewTab();
 }
 
 void MainWindow::uiUpdateForClosing()
@@ -299,5 +302,30 @@ void MainWindow::syncRatingItems()
         item.item->setStudents(&vStudent);
         item.item->fillScoreFromDb(vGrade);
     }
+}
+
+void MainWindow::updateOverviewTab()
+{
+    int selectedIndex = ui->comboOverview->currentIndex();
+    switch (selectedIndex)
+    {
+    case 0:
+        showChart();
+        break;
+    default:
+        throw std::invalid_argument("Not implemented");
+    }
+}
+
+void MainWindow::showChart()
+{
+    QHBoxLayout* layout = new QHBoxLayout(ui->widgetOverview);
+    QChartView* view = new QChartView(ui->widgetOverview);
+    layout->addWidget(view);
+    QLineSeries* series = new QLineSeries();
+    series->append(0, 6);
+    series->append(2, 4);
+    view->chart()->addSeries(series);
+    view->chart()->createDefaultAxes();
 }
 

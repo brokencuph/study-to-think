@@ -45,6 +45,8 @@ public:
 
     void updateOverviewTab();
 
+    void showChart();
+
 private:
     Ui::MainWindow *ui;
     std::unique_ptr<DbSession> currentDb;
