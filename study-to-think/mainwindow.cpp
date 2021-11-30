@@ -18,7 +18,10 @@
 #include"attendancescoredialog.h"
 #include "db_access.h"
 
-
+static const QStringList overviewNames =
+{
+    QObject::tr("Distribution")
+};
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -27,6 +30,8 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
     
+    ui->comboOverview->addItems(overviewNames);
+
     connect(ui->actionOpen, &QAction::triggered, this, &MainWindow::selectDbForOpen);
     connect(ui->actionNew, &QAction::triggered, this, &MainWindow::newDb);
     connect(ui->actionClose, &QAction::triggered, this, &MainWindow::uiUpdateForClosing);
@@ -296,11 +301,8 @@ void MainWindow::syncRatingItems()
 {
     for (auto& item : vScheme)
     {
-        if (item.item->getCurrentItemType() == 1)
-        {
-            item.item->setStudents(&vStudent);
-            item.item->fillScoreFromDb(vGrade);
-        }
+        item.item->setStudents(&vStudent);
+        item.item->fillScoreFromDb(vGrade);
     }
 }
 
