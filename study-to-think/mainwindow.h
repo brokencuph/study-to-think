@@ -53,5 +53,8 @@ private:
     std::vector<Student> vStudent;
     std::vector<RatingItem> vScheme;
     std::vector<StudentGradeDBO> vGrade;
+
+signals:
+    void totalScoreUpdated();
 };
 #endif // MAINWINDOW_H

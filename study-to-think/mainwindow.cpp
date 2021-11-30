@@ -11,7 +11,10 @@
 #include <QLineEdit>
 #include <QChart>
 #include <QChartView>
-#include <QLineSeries>
+#include <QBarSeries>
+#include <QBarSet>
+#include <QBarCategoryAxis>
+#include <QValueAxis>
 #include<iostream>
 #include<set>
 #include<iterator>
@@ -39,6 +42,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->actionClose, &QAction::triggered, this, &MainWindow::uiUpdateForClosing);
     connect(ui->toolButtonStudentAdd, &QAbstractButton::clicked, this, &MainWindow::uiAddStudent);
     connect(ui->toolButtonStudentRemove, &QAbstractButton::clicked, this, &MainWindow::uiRemoveStudent);
+    connect(this, &MainWindow::totalScoreUpdated, this, &MainWindow::updateOverviewTab);
 }
 
 MainWindow::~MainWindow()
@@ -293,6 +297,7 @@ void MainWindow::updateTotalScore()
         item->setEditable(false);
         model->setItem(i, 3, item);
     }
+    emit totalScoreUpdated();
 }
 
 void MainWindow::syncRatingItems()
@@ -306,6 +311,8 @@ void MainWindow::syncRatingItems()
 
 void MainWindow::updateOverviewTab()
 {
+    qDeleteAll(ui->widgetOverview->findChildren<QWidget*>("", Qt::FindDirectChildrenOnly));
+    qDeleteAll(ui->widgetOverview->findChildren<QLayout*>("", Qt::FindDirectChildrenOnly));
     int selectedIndex = ui->comboOverview->currentIndex();
     switch (selectedIndex)
     {
@@ -319,13 +326,44 @@ void MainWindow::updateOverviewTab()
 
 void MainWindow::showChart()
 {
+    static QStringList categories
+    {
+        "F\n(0-49)", "D", "C-", "C", "C+", "B-", "B", "B+", "A-", "A", "A+"
+    };
     QHBoxLayout* layout = new QHBoxLayout(ui->widgetOverview);
     QChartView* view = new QChartView(ui->widgetOverview);
     layout->addWidget(view);
-    QLineSeries* series = new QLineSeries();
-    series->append(0, 6);
-    series->append(2, 4);
+    QBarSeries* series = new QBarSeries();
+    QBarSet* barSet = new QBarSet(tr("Total Score"));
+    auto countRange = [this]
+    {
+        static const int seps[] = { 0, 50, 53, 58, 63, 68, 72, 78, 83, 88, 93 };
+        std::vector<int> ans(11);
+        QStandardItemModel* model = static_cast<QStandardItemModel*>(ui->tableStudent->model());
+        for (size_t i = 0; i < vStudent.size(); i++)
+        {
+            int score = stoi(model->item(i, 3)->text().toStdString());
+            if (score < 0)
+            {
+                continue;
+            }
+            size_t offset = std::lower_bound(std::begin(seps), std::end(seps), score) - 1 - std::begin(seps);
+            ans[offset]++;
+        }
+        return ans;
+    };
+    auto barData = countRange();
+    barSet->append(QList<qreal>(barData.cbegin(), barData.cend()));
+    series->append(barSet);
     view->chart()->addSeries(series);
-    view->chart()->createDefaultAxes();
+    QBarCategoryAxis* axisX = new QBarCategoryAxis();
+    axisX->append(categories);
+    view->chart()->addAxis(axisX, Qt::AlignBottom);
+    series->attachAxis(axisX);
+
+    QValueAxis* axisY = new QValueAxis();
+    axisY->setRange(0, 1 + *std::max_element(barData.cbegin(), barData.cend()));
+    view->chart()->addAxis(axisY, Qt::AlignLeft);
+    series->attachAxis(axisY);
 }
 
