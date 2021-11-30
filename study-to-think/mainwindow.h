@@ -47,6 +47,8 @@ public:
 
     void showChart();
 
+    void showStatistics();
+
 private:
     Ui::MainWindow *ui;
     std::unique_ptr<DbSession> currentDb;

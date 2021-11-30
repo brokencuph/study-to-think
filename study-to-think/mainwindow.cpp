@@ -22,10 +22,12 @@
 #include "./ui_mainwindow.h"
 #include "manualscoredialog.h"
 #include "db_access.h"
+#include "stat_utils.h"
 
 static const QStringList overviewNames =
 {
-    QObject::tr("Distribution")
+    QObject::tr("Distribution"),
+    QObject::tr("Statistics")
 };
 
 MainWindow::MainWindow(QWidget *parent)
@@ -146,10 +148,12 @@ void MainWindow::uiUpdateForOpeningDb()
     ui->toolButtonStudentRemove->setEnabled(true);
     updateTotalScore();
     updateOverviewTab();
+    connect(ui->comboOverview, &QComboBox::currentIndexChanged, this, &MainWindow::updateOverviewTab);
 }
 
 void MainWindow::uiUpdateForClosing()
 {
+    disconnect(ui->comboOverview, nullptr, nullptr, nullptr);
     ui->toolButtonStudentAdd->setEnabled(false);
     ui->toolButtonStudentRemove->setEnabled(false);
     ui->toolButtonSchemeAdd->setEnabled(false);
@@ -311,17 +315,24 @@ void MainWindow::syncRatingItems()
 
 void MainWindow::updateOverviewTab()
 {
+    int selectedIndex = ui->comboOverview->currentIndex();
+    setCursor(QCursor(Qt::BusyCursor));
+    ui->widgetOverview->setUpdatesEnabled(false);
     qDeleteAll(ui->widgetOverview->findChildren<QWidget*>("", Qt::FindDirectChildrenOnly));
     qDeleteAll(ui->widgetOverview->findChildren<QLayout*>("", Qt::FindDirectChildrenOnly));
-    int selectedIndex = ui->comboOverview->currentIndex();
     switch (selectedIndex)
     {
     case 0:
         showChart();
         break;
+    case 1:
+        showStatistics();
+        break;
     default:
         throw std::invalid_argument("Not implemented");
     }
+    ui->widgetOverview->setUpdatesEnabled(true);
+    setCursor(QCursor(Qt::ArrowCursor));
 }
 
 void MainWindow::showChart()
@@ -365,5 +376,21 @@ void MainWindow::showChart()
     axisY->setRange(0, 1 + *std::max_element(barData.cbegin(), barData.cend()));
     view->chart()->addAxis(axisY, Qt::AlignLeft);
     series->attachAxis(axisY);
+}
+
+void MainWindow::showStatistics()
+{
+    using namespace stt::stat_utils;
+    QStandardItemModel* model = static_cast<QStandardItemModel*>(ui->tableStudent->model());
+    std::vector<int> totalScores;
+    for (size_t i = 0; i < vStudent.size(); i++)
+    {
+        totalScores.push_back(
+            std::stoi(model->item(i, 3)->text().toStdString())
+        );
+    }
+    QFormLayout* formLayout = new QFormLayout(ui->widgetOverview);
+    QLabel* labelAvg = new QLabel(qAverageScore(totalScores.cbegin(), totalScores.cend()), ui->widgetOverview);
+    formLayout->addRow(tr("Average Score:"), labelAvg);
 }
 

@@ -18,6 +18,6 @@ target_link_libraries(stt PRIVATE unofficial::sqlite3::sqlite3)
 
 find_package(Qt${QT_VERSION_MAJOR}Charts)
 
-add_executable(stt_gui WIN32 "mainwindow.cpp" "mainwindow.h" "mainwindow.ui" "qt_main.cpp" "db_access.cpp" "student.cpp" "student.h" "qt_defs.h" "grading_scheme.cpp" "grading_scheme.h" "manualscoredialog.cpp" "manualscoredialog.h" "manualscoredialog.ui")
+add_executable(stt_gui WIN32 "mainwindow.cpp" "mainwindow.h" "mainwindow.ui" "qt_main.cpp" "db_access.cpp" "student.cpp" "student.h" "qt_defs.h" "grading_scheme.cpp" "grading_scheme.h" "manualscoredialog.cpp" "manualscoredialog.h" "manualscoredialog.ui" "stat_utils.cpp" "stat_utils.h")
 target_link_libraries(stt_gui PRIVATE Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::Charts unofficial::sqlite3::sqlite3)
 # TODO: Add tests and install targets if needed.
