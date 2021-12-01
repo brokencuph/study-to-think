@@ -31,7 +31,7 @@ TEST(AttendanceTest, GetScore)
 		}
 		else
 		{
-			attendance.studentAttendance["333"].push_back(CheckInType::LATEANDLEAVEEARLY);
+			attendance.studentAttendance["333"].push_back(CheckInType::LATE);
 		}
 	} // some lates
 	Student stu111("111", "111"), stu222("222", "222"), stu333("333", "333");
