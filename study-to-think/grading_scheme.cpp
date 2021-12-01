@@ -18,6 +18,14 @@ std::string ItemInfo::typeNames[] =
 	"Manual"
 };
 
+const char* checkInTypeNames[] =
+{
+	"Normal",
+	"Late",
+	"Early Leave",
+	"Absent"
+};
+
 void ItemOp::operator()(ItemInfo* info) const
 {
 	this->func(info);
@@ -112,7 +120,7 @@ int ItemAttendance::getScore(const Student& student) const
 	double absentRate = 0.0;
 	for (auto i = (studentAttendance.at(selected_ID)).begin(); i != (studentAttendance.at(selected_ID).end()); i++)
 	{
-		if (*i == CheckInType::LATEANDLEAVEEARLY)
+		if (*i == CheckInType::LATE || *i == CheckInType::LEAVEEARLY)
 			numberOfLateAndLeaveEarly++;
 		if (*i == CheckInType::ABSENT)
 			numberOfAbsentOriginal++;
@@ -201,6 +209,11 @@ void ItemAttendance::fillScoreFromDb(const std::vector<StudentGradeDBO>& vec)
 int ItemAttendance::getSessionNumber() const
 {
 	return sessionNumber;
+}
+
+void ItemAttendance::modifySessionNumber(int newSessionNumber) 
+{
+	sessionNumber = newSessionNumber;
 }
 
 void manualEnterGrade(ItemInfo* itemInfo)

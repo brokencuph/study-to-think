@@ -234,7 +234,7 @@ void MainWindow::uiEditScheme(const QModelIndex& idx)
     case 0:
     {
         //QMessageBox::critical(this, tr("Error"), tr("Not implemented"));
-        AttendanceScoreDialog dialog(this, &vStudent);
+        AttendanceScoreDialog dialog(this, &vStudent, static_cast<ItemAttendance*>(item.item.get()));
         if (dialog.willKeep)
         {
             dialog.exec();

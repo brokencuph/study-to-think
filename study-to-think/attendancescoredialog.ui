@@ -17,7 +17,7 @@
    <property name="geometry">
     <rect>
      <x>280</x>
-     <y>91</y>
+     <y>10</y>
      <width>111</width>
      <height>31</height>
     </rect>
@@ -26,8 +26,8 @@
   <widget class="QComboBox" name="comboBox_2">
    <property name="geometry">
     <rect>
-     <x>6</x>
-     <y>91</y>
+     <x>10</x>
+     <y>10</y>
      <width>231</width>
      <height>31</height>
     </rect>
@@ -37,13 +37,23 @@
    <property name="geometry">
     <rect>
      <x>290</x>
-     <y>160</y>
+     <y>50</y>
      <width>93</width>
      <height>28</height>
     </rect>
    </property>
    <property name="text">
     <string>PushButton</string>
+   </property>
+  </widget>
+  <widget class="QTableView" name="tableView">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>90</y>
+     <width>381</width>
+     <height>192</height>
+    </rect>
    </property>
   </widget>
  </widget>

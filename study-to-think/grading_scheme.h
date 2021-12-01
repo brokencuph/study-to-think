@@ -66,18 +66,22 @@ public:
 
 enum class CheckInType {
 	NORMAL,
-	LATEANDLEAVEEARLY,
+	LATE,
+	LEAVEEARLY,
 	ABSENT
 };
+
+extern const char* checkInTypeNames[];
+
 
 class ItemAttendance : public ItemInfo {
 private:
 	std::string itemName;
-	StudentIdMap<std::vector<CheckInType>> studentAttendance;
 	const StudentVector* students = nullptr;
 	int sessionNumber = 0; // how many teaching sessions
 	static std::vector<ItemOp> ops;
 public:
+	StudentIdMap<std::vector<CheckInType>> studentAttendance;
 	virtual void setItemName(std::string itemName);
 	virtual std::string getItemName() const;
 	virtual int getScore(const Student& student) const;
@@ -88,6 +92,7 @@ public:
 	virtual void setStudents(const std::vector<Student>* stus);
 	virtual void fillScoreFromDb(const std::vector<StudentGradeDBO>& vec);
 	int getSessionNumber() const;
+	void modifySessionNumber(int newSessionNumber) ;
 };
 
 class ItemManual : public ItemInfo {
