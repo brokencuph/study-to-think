@@ -45,11 +45,18 @@ public:
 
     void updateOverviewTab();
 
+    void showChart();
+
+    void showStatistics();
+
 private:
     Ui::MainWindow *ui;
     std::unique_ptr<DbSession> currentDb;
     std::vector<Student> vStudent;
     std::vector<RatingItem> vScheme;
     std::vector<StudentGradeDBO> vGrade;
+
+signals:
+    void totalScoreUpdated();
 };
 #endif // MAINWINDOW_H
