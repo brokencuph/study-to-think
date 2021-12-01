@@ -16,7 +16,7 @@ class AttendanceScoreDialog : public QDialog
 public:
     bool willKeep = true;
 
-    explicit AttendanceScoreDialog(QWidget *parent , const std::vector<Student>* vStudent, ItemAttendance* scoreStore);
+    AttendanceScoreDialog(QWidget *parent , const std::vector<Student>* vStudent, ItemAttendance* scoreStore, RatingItem* item, DbSession* currentDb);
     
     ~AttendanceScoreDialog();
 
@@ -24,6 +24,15 @@ private:
     Ui::AttendanceScoreDialog *ui;
     const std::vector<Student>* vStudent;
     ItemAttendance *scoreStore;
+    RatingItem* ratingItem;
+    DbSession* currentDb;
+
+    void updateModel(int index);
+
+    void updateAttendance(const QModelIndex&, const QModelIndex&, const QList<int>&);
+
+signals:
+    void scoreChanged();
 };
 
 

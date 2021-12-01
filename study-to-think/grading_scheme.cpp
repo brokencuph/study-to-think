@@ -26,6 +26,14 @@ const char* checkInTypeNames[] =
 	"Absent"
 };
 
+const std::map<std::string, CheckInType> checkInTypeIds
+{
+	{"Normal", CheckInType::NORMAL},
+	{"Late", CheckInType::LATE},
+	{"Early Leave", CheckInType::LEAVEEARLY},
+	{"Absent", CheckInType::ABSENT}
+};
+
 void ItemOp::operator()(ItemInfo* info) const
 {
 	this->func(info);
@@ -214,6 +222,20 @@ int ItemAttendance::getSessionNumber() const
 void ItemAttendance::modifySessionNumber(int newSessionNumber) 
 {
 	sessionNumber = newSessionNumber;
+}
+
+std::string ItemAttendance::scoreRepr(const std::vector<CheckInType>& vec)
+{
+	std::stringstream ss;
+	for (size_t i = 0; i < vec.size(); i++)
+	{
+		if (i > 0)
+		{
+			ss << " ";
+		}
+		ss << (int)vec[i];
+	}
+	return ss.str();
 }
 
 void manualEnterGrade(ItemInfo* itemInfo)

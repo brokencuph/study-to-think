@@ -72,7 +72,7 @@ enum class CheckInType {
 };
 
 extern const char* checkInTypeNames[];
-
+extern const std::map<std::string, CheckInType> checkInTypeIds;
 
 class ItemAttendance : public ItemInfo {
 private:
@@ -93,6 +93,7 @@ public:
 	virtual void fillScoreFromDb(const std::vector<StudentGradeDBO>& vec);
 	int getSessionNumber() const;
 	void modifySessionNumber(int newSessionNumber) ;
+	static std::string scoreRepr(const std::vector<CheckInType>&);
 };
 
 class ItemManual : public ItemInfo {
