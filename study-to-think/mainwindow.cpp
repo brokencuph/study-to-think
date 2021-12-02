@@ -118,6 +118,7 @@ void MainWindow::uiUpdateForOpeningDb()
 
     this->vStudent.clear();
     this->currentDb->retrieveAll(this->vStudent);
+    this->vGrade.clear();
     currentDb->retrieveAll(vGrade);
     syncRatingItems();
 
