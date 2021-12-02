@@ -170,6 +170,9 @@
     <addaction name="actionNew"/>
     <addaction name="actionOpen"/>
     <addaction name="actionClose"/>
+    <addaction name="separator"/>
+    <addaction name="actionImport"/>
+    <addaction name="actionExport"/>
    </widget>
    <addaction name="menuFile"/>
   </widget>
@@ -187,6 +190,22 @@
   <action name="actionClose">
    <property name="text">
     <string>&amp;Close</string>
+   </property>
+  </action>
+  <action name="actionImport">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>&amp;Import...</string>
+   </property>
+  </action>
+  <action name="actionExport">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>&amp;Export...</string>
    </property>
   </action>
  </widget>

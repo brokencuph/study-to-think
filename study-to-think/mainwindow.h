@@ -27,9 +27,13 @@ public:
 
     void newDb(bool checked);
 
+    void exportDb(bool checked);
+
+    void importDb(bool checked);
+
     void uiUpdateForOpeningDb();
 
-    void uiUpdateForClosing();
+    void uiUpdateForClosing(bool closeDb = true);
 
     void uiAddStudent(bool);
 

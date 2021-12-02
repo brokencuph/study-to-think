@@ -16,6 +16,7 @@
 #include <QBarCategoryAxis>
 #include <QValueAxis>
 #include<iostream>
+#include <fstream>
 #include<set>
 #include<iterator>
 #include "mainwindow.h"
@@ -24,6 +25,7 @@
 #include"attendancescoredialog.h"
 #include "db_access.h"
 #include "stat_utils.h"
+#include "csv_io.h"
 
 static const QStringList overviewNames =
 {
@@ -43,6 +45,8 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->actionOpen, &QAction::triggered, this, &MainWindow::selectDbForOpen);
     connect(ui->actionNew, &QAction::triggered, this, &MainWindow::newDb);
     connect(ui->actionClose, &QAction::triggered, this, &MainWindow::uiUpdateForClosing);
+    connect(ui->actionExport, &QAction::triggered, this, &MainWindow::exportDb);
+    connect(ui->actionImport, &QAction::triggered, this, &MainWindow::importDb);
     connect(ui->toolButtonStudentAdd, &QAbstractButton::clicked, this, &MainWindow::uiAddStudent);
     connect(ui->toolButtonStudentRemove, &QAbstractButton::clicked, this, &MainWindow::uiRemoveStudent);
     connect(this, &MainWindow::totalScoreUpdated, this, &MainWindow::updateOverviewTab);
@@ -90,6 +94,71 @@ void MainWindow::newDb(bool checked)
         }
         this->currentDb = std::make_unique<DbSession>(fileName.toUtf8().constData());
         this->uiUpdateForOpeningDb();
+    }
+    catch (const std::exception& e)
+    {
+        QMessageBox::warning(this, tr("Error"), e.what());
+    }
+}
+
+template <class T>
+static inline void writeToCsvFile(DbSession* currentDb, const char* fileName)
+{
+    using namespace stt::csv_io;
+    std::string csvData = dbToCsv<T>(currentDb);
+    std::string csvInLocal = QString::fromUtf8(csvData.c_str()).toLocal8Bit().toStdString();
+    FILE* file = fopen(fileName, "w");
+    fputs(csvInLocal.c_str(), file);
+    fclose(file);
+}
+
+void MainWindow::exportDb(bool checked)
+{
+    try
+    {
+        auto path = QFileDialog::getExistingDirectory(this, tr("Choose a folder to save..."));
+        if (path == "")
+        {
+            return;
+        }
+        writeToCsvFile<Student>(currentDb.get(), (path.toLocal8Bit().toStdString() + "/student.csv").c_str());
+        writeToCsvFile<RatingItem>(currentDb.get(), (path.toLocal8Bit().toStdString() + "/rating_item.csv").c_str());
+        writeToCsvFile<StudentGradeDBO>(currentDb.get(), (path.toLocal8Bit().toStdString() + "/grade.csv").c_str());
+        QMessageBox::information(this, tr("Success"), tr("Export successfully."));
+    }
+    catch (const std::exception& e)
+    {
+        QMessageBox::warning(this, tr("Error"), e.what());
+    }
+}
+
+template <class T>
+static inline void readFromCsvFile(DbSession* db, const char* path)
+{
+    using namespace stt::csv_io;
+    std::ifstream file(path);
+    std::stringstream ss;
+    ss << file.rdbuf();
+    std::string str = ss.str();
+    std::string strInUtf8 = QString::fromLocal8Bit(str.c_str()).toUtf8().toStdString();
+    csvToDb<T>(strInUtf8.substr(strInUtf8.find('\n') + 1), db);
+}
+
+void MainWindow::importDb(bool checked)
+{
+    using namespace stt::csv_io;
+    try
+    {
+        auto path = QFileDialog::getExistingDirectory(this, tr("Choose a folder to save..."));
+        if (path == "")
+        {
+            return;
+        }
+        readFromCsvFile<Student>(currentDb.get(), (path.toLocal8Bit().toStdString() + "/student.csv").c_str());
+        readFromCsvFile<RatingItem>(currentDb.get(), (path.toLocal8Bit().toStdString() + "/rating_item.csv").c_str());
+        readFromCsvFile<StudentGradeDBO>(currentDb.get(), (path.toLocal8Bit().toStdString() + "/grade.csv").c_str());
+        uiUpdateForClosing(false);
+        uiUpdateForOpeningDb();
     }
     catch (const std::exception& e)
     {
@@ -152,10 +221,14 @@ void MainWindow::uiUpdateForOpeningDb()
     updateTotalScore();
     updateOverviewTab();
     connect(ui->comboOverview, &QComboBox::currentIndexChanged, this, &MainWindow::updateOverviewTab);
+    ui->actionImport->setEnabled(true);
+    ui->actionExport->setEnabled(true);
 }
 
-void MainWindow::uiUpdateForClosing()
+void MainWindow::uiUpdateForClosing(bool closeDb)
 {
+    ui->actionExport->setEnabled(false);
+    ui->actionImport->setEnabled(false);
     disconnect(ui->comboOverview, nullptr, nullptr, nullptr);
     ui->toolButtonStudentAdd->setEnabled(false);
     ui->toolButtonStudentRemove->setEnabled(false);
@@ -169,7 +242,10 @@ void MainWindow::uiUpdateForClosing()
     ui->listScheme->setModel(nullptr);
     delete modelStudent;
     delete modelScheme;
-    this->currentDb = nullptr;
+    if (closeDb)
+    {
+        this->currentDb = nullptr;
+    }
 }
 
 void MainWindow::uiAddStudent(bool)
@@ -370,8 +446,8 @@ void MainWindow::showChart()
             {
                 continue;
             }
-            size_t offset = std::lower_bound(std::begin(seps), std::end(seps), score) - 1 - std::begin(seps);
-            ans[offset]++;
+            int offset = std::lower_bound(std::begin(seps), std::end(seps), score) - 1 - std::begin(seps);
+            ans[offset < 0 ? 0 : offset]++;
         }
         return ans;
     };
