@@ -41,7 +41,7 @@
              </property>
              <property name="font">
               <font>
-               <family>Cascadia Mono</family>
+               <family>Courier</family>
                <pointsize>12</pointsize>
                <weight>75</weight>
                <bold>true</bold>
@@ -62,8 +62,10 @@
              </property>
              <property name="font">
               <font>
-               <family>Cascadia Mono</family>
+               <family>Courier</family>
                <pointsize>12</pointsize>
+               <weight>75</weight>
+               <bold>true</bold>
               </font>
              </property>
              <property name="toolTip">
@@ -97,7 +99,7 @@
              </property>
              <property name="font">
               <font>
-               <family>Cascadia Mono</family>
+               <family>Courier</family>
                <pointsize>12</pointsize>
                <weight>75</weight>
                <bold>true</bold>
@@ -115,7 +117,7 @@
              </property>
              <property name="font">
               <font>
-               <family>Cascadia Mono</family>
+               <family>Courier</family>
                <pointsize>12</pointsize>
                <weight>75</weight>
                <bold>true</bold>
