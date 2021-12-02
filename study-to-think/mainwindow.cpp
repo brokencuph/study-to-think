@@ -55,6 +55,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::selectDbForOpen(bool checked)
 {
+    this->uiUpdateForClosing();
     try
     {
         auto fileName = QFileDialog::getOpenFileName(
