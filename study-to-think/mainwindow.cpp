@@ -209,6 +209,8 @@ void MainWindow::uiAddStudent(bool)
         x->appendRow(QList<QStandardItem*>(item, item + 3));
     }
     syncRatingItems();
+    updateTotalScore();
+    updateOverviewTab();
 }
 
 void MainWindow::uiRemoveStudent(bool)
@@ -233,7 +235,7 @@ void MainWindow::uiRemoveStudent(bool)
         vStudent.erase(v_it_1 + rowIndex);
 
     }
-
+    updateOverviewTab();
 }
 
 void MainWindow::uiEditScheme(const QModelIndex& idx)
