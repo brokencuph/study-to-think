@@ -360,13 +360,13 @@ void MainWindow::uiAddScheme(bool)
                 sch.item = std::make_unique<ItemManual>();
 
             currentDb->insert(sch);
-            vScheme.push_back(std::move(sch));
+            sch.item->setItemName(sch.name);
             QStandardItemModel* x = static_cast<QStandardItemModel*>(ui->listScheme->model());
             std::string temp1 = qlineedit2->text().toUtf8().toStdString() + " (" + value3.toUtf8().toStdString()
                 + ", " + std::to_string(sch.weight) + "%)";
-            QString* appendString = new QString(temp1.c_str());
-            QStandardItem* appendStandardItem = new QStandardItem(*appendString);
-
+            QString appendString = QString(temp1.c_str());
+            QStandardItem* appendStandardItem = new QStandardItem(appendString);
+            appendStandardItem->setEditable(false);
             x->appendRow(appendStandardItem);
             vScheme.push_back(std::move(sch));
         }
