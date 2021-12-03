@@ -49,7 +49,7 @@ std::string ItemManual::getItemName() const
 	return itemName;
 }
 
-int ItemManual::getScore(const Student& student) const
+TotalGrade ItemManual::getScore(const Student& student) const
 {
 	return this->studentScores.at(student.id);
 }
@@ -116,7 +116,7 @@ std::string ItemAttendance::getItemName() const
 	return itemName;
 }
 
-int ItemAttendance::getScore(const Student& student) const
+TotalGrade ItemAttendance::getScore(const Student& student) const
 {
 	// TODO: implement the logic
 	// modify by ZHANG Xiubo 2021-11-25
@@ -145,8 +145,7 @@ int ItemAttendance::getScore(const Student& student) const
 		return 20;
 	else
 	{
-		throw std::runtime_error("T letter");
-		//TO be continue by the help of 1809853ji011006
+		return SpecialGrade::T;
 	}
 	return 0;
 	throw std::runtime_error("not implemented");

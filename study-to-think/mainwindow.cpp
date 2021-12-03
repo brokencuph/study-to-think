@@ -472,7 +472,7 @@ void MainWindow::updateTotalScore()
     auto model = static_cast<QStandardItemModel*>(ui->tableStudent->model());
     for (size_t i = 0; i < vStudent.size(); i++)
     {
-        QStandardItem* item = new QStandardItem(QString(std::to_string(vStudent[i].getTotalScore(vScheme)).c_str()));
+        QStandardItem* item = new QStandardItem(QString(vStudent[i].getTotalScore(vScheme).toString().c_str()));
         item->setEditable(false);
         model->setItem(i, 3, item);
     }
@@ -514,7 +514,7 @@ void MainWindow::showChart()
 {
     static QStringList categories
     {
-        "F\n(0-49)", "D", "C-", "C", "C+", "B-", "B", "B+", "A-", "A", "A+"
+        "F", "D", "C-", "C", "C+", "B-", "B", "B+", "A-", "A", "A+"
     };
     QHBoxLayout* layout = new QHBoxLayout(ui->widgetOverview);
     QChartView* view = new QChartView(ui->widgetOverview);
@@ -528,7 +528,12 @@ void MainWindow::showChart()
         QStandardItemModel* model = static_cast<QStandardItemModel*>(ui->tableStudent->model());
         for (size_t i = 0; i < vStudent.size(); i++)
         {
-            int score = stoi(model->item(i, 3)->text().toStdString());
+            auto scoreRepr = model->item(i, 3)->text().toStdString();
+            if (!isdigit(scoreRepr[0]))
+            {
+                continue;
+            }
+            int score = stoi(scoreRepr);
             if (score < 0)
             {
                 continue;
@@ -560,8 +565,13 @@ void MainWindow::showStatistics()
     std::vector<int> totalScores;
     for (size_t i = 0; i < vStudent.size(); i++)
     {
+        auto scoreRepr = model->item(i, 3)->text().toStdString();
+        if (!isdigit(scoreRepr[0]))
+        {
+            continue;
+        }
         totalScores.push_back(
-            std::stoi(model->item(i, 3)->text().toStdString())
+            std::stoi(scoreRepr)
         );
     }
     QFormLayout* formLayout = new QFormLayout(ui->widgetOverview);

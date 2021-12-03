@@ -8,6 +8,9 @@
 #include <vector>
 #include "student.h"
 #include "db_access.h"
+#include "total_grade.h"
+
+using namespace stt::grade_utils;
 
 class Student;
 
@@ -51,7 +54,7 @@ class ItemInfo
 public:
 	virtual void setItemName(std::string itemName) = 0;
 	virtual std::string getItemName() const = 0;
-	virtual int getScore(const Student& student) const = 0;
+	virtual TotalGrade getScore(const Student& student) const = 0;
 	//virtual void ratingInitiate() = 0;
 	virtual const std::vector<ItemOp>& getOps() const = 0;
 	virtual int getCurrentItemType() const = 0;
@@ -84,7 +87,7 @@ public:
 	StudentIdMap<std::vector<CheckInType>> studentAttendance;
 	virtual void setItemName(std::string itemName);
 	virtual std::string getItemName() const;
-	virtual int getScore(const Student& student) const;
+	virtual TotalGrade getScore(const Student& student) const;
 	virtual const std::vector<ItemOp>& getOps() const;
 	virtual int getCurrentItemType() const;
 	virtual void setParams(const char* paramStr);
@@ -108,7 +111,7 @@ public:
 	StudentIdMap<int> studentScores;
 	virtual void setItemName(std::string itemName);
 	virtual std::string getItemName() const;
-	virtual int getScore(const Student& student) const;
+	virtual TotalGrade getScore(const Student& student) const;
 	virtual const std::vector<ItemOp>& getOps() const;
 	virtual int getCurrentItemType() const;
 	virtual void setParams(const char* paramStr);

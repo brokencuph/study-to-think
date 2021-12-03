@@ -2,6 +2,9 @@
 #define private public
 #include "../study-to-think/grading_scheme.h"
 #include "../study-to-think/student.h"
+#include "../study-to-think/total_grade.h"
+
+using namespace stt::grade_utils;
 
 TEST(AttendanceTest, GetScore)
 {
@@ -35,12 +38,13 @@ TEST(AttendanceTest, GetScore)
 		}
 	} // some lates
 	Student stu111("111", "111"), stu222("222", "222"), stu333("333", "333");
-	ASSERT_EQ(attendance.getScore(stu111), 100);
+	ASSERT_EQ(attendance.getScore(stu111), TotalGrade(100));
 	ASSERT_ANY_THROW(
 	{ 
 		attendance.getScore(stu222);
 	});
-	ASSERT_EQ(attendance.getScore(stu333), 70);
+	ASSERT_EQ(attendance.getScore(stu222), TotalGrade(SpecialGrade::T));
+	ASSERT_EQ(attendance.getScore(stu333), TotalGrade(70));
 	SUCCEED();
 }
 

@@ -55,10 +55,19 @@ namespace stt::grade_utils
 		return std::visit(TotalGradeToString(), repr);
 	}
 
-	TotalGrade::TotalGrade(TotalGradeRepr repr)
+	TotalGrade::TotalGrade(const TotalGradeRepr& repr)
 		: repr(repr)
 	{
 
+	}
+	TotalGrade::TotalGrade(double x)
+		: repr(x)
+	{
+
+	}
+	TotalGrade::TotalGrade(SpecialGrade x)
+		: repr(x)
+	{
 	}
 	std::string TotalGradeToString::operator()(double x)
 	{

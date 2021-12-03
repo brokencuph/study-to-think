@@ -18,7 +18,9 @@ namespace stt::grade_utils
 	private:
 		TotalGradeRepr repr;
 	public:
-		TotalGrade(TotalGradeRepr repr);
+		TotalGrade(const TotalGradeRepr& repr);
+		TotalGrade(double x);
+		TotalGrade(SpecialGrade x);
 		TotalGrade() = default;
 		TotalGrade operator+(const TotalGrade& other) const;
 		TotalGrade operator-(const TotalGrade& other) const;

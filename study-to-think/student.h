@@ -7,6 +7,9 @@
 #include <map>
 #include <vector>
 //#include "grading_scheme.h"
+#include "total_grade.h"
+
+using namespace stt::grade_utils;
 
 typedef std::string ExtraStudentInfo;
 typedef std::string StudentIdType;
@@ -28,7 +31,7 @@ public:
 	Student() = default;
 	// toDbRepr()
 	// fromDbRepr()
-	int getTotalScore(const std::vector<RatingItem>& items) const;
+	TotalGrade getTotalScore(const std::vector<RatingItem>& items) const;
 	std::string getDbTuple() const;
 	std::string getDbKeyValue() const;
 	static int selectCallback(void*, int, char**, char**);
