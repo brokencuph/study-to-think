@@ -322,6 +322,8 @@ void MainWindow::uiRemoveScheme(bool)
         vScheme.erase(v_it_1 + rowIndex);
 
     }
+    syncRatingItems();
+    updateTotalScore();
     updateOverviewTab();
 
 }
