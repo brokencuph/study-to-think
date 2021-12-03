@@ -39,7 +39,7 @@ AttendanceScoreDialog::AttendanceScoreDialog(QWidget *parent, const std::vector<
     ui->setupUi(this);
     const std::vector<Student>& vStudent = *_vStudent;
     //QStringList attendanceFormList;
-    if (scoreStore->getSessionNumber()==15) // current session number invalid
+    if (scoreStore->getSessionNumber()==0) // current session number invalid
     {
         QDialog dialog(this);
         QFormLayout form(&dialog);

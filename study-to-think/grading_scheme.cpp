@@ -120,6 +120,10 @@ TotalGrade ItemAttendance::getScore(const Student& student) const
 {
 	// TODO: implement the logic
 	// modify by ZHANG Xiubo 2021-11-25
+	if (sessionNumber == 0)
+	{
+		return 100;
+	}
 	StudentIdType selected_ID;
 	selected_ID = student.id;
 	int numberOfLateAndLeaveEarly = 0;
@@ -221,6 +225,10 @@ int ItemAttendance::getSessionNumber() const
 void ItemAttendance::modifySessionNumber(int newSessionNumber) 
 {
 	sessionNumber = newSessionNumber;
+	for (auto& [k, v] : studentAttendance)
+	{
+		v.resize(newSessionNumber);
+	}
 }
 
 std::string ItemAttendance::scoreRepr(const std::vector<CheckInType>& vec)
