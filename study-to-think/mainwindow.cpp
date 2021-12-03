@@ -323,54 +323,54 @@ void MainWindow::uiAddScheme(bool)
 {
     QDialog dialog(this);
     QFormLayout form(&dialog);
-    form.addRow(new QLabel("User input:"));
-    // Value1
-    QString value1 = QString("Percentage: ");
-    QLineEdit* qlineedit1 = new QLineEdit(&dialog);
-    form.addRow(value1, qlineedit1);
-    // Value2
-    QString value2 = QString("Input Name: ");
-    QLineEdit* qlineedit2 = new QLineEdit(&dialog);
-    form.addRow(value2, qlineedit2);
     QStringList items;
-    items << "Attendance" << "Manual" ;
+    items << "Attendance" << "Manual";
     QString dlgTitle = "Selection";
     QString txtLabel = "Which one.";
     int     curIndex = 0;
     bool    editable = true;
     bool    ok = false;
     QString value3 = QInputDialog::getItem(this, dlgTitle, txtLabel, items, curIndex, editable, &ok);
-    
-    //QLineEdit* qlineedit3 = new QLineEdit(&dialog);
-    //form.addRow(value3, qlineedit3);
+
     // Add Cancel and OK button
-    QDialogButtonBox buttonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel,
-        Qt::Horizontal, &dialog);
-    form.addRow(&buttonBox);
-    QObject::connect(&buttonBox, SIGNAL(accepted()), &dialog, SLOT(accept()));
-    QObject::connect(&buttonBox, SIGNAL(rejected()), &dialog, SLOT(reject()));
+    if (ok)
+    {
+        form.addRow(new QLabel("User input:"));
+        // Value1
+        QString value1 = QString("Percentage: ");
+        QLineEdit* qlineedit1 = new QLineEdit(&dialog);
+        form.addRow(value1, qlineedit1);
+        // Value2
+        QString value2 = QString("Input Name: ");
+        QLineEdit* qlineedit2 = new QLineEdit(&dialog);
+        form.addRow(value2, qlineedit2);
+        QDialogButtonBox buttonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel,
+            Qt::Horizontal, &dialog);
+        form.addRow(&buttonBox);
+        QObject::connect(&buttonBox, SIGNAL(accepted()), &dialog, SLOT(accept()));
+        QObject::connect(&buttonBox, SIGNAL(rejected()), &dialog, SLOT(reject()));
+        if (dialog.exec() == QDialog::Accepted) {
 
-    // Process when OK button is clicked
-    if (dialog.exec() == QDialog::Accepted) {
+            RatingItem sch;
+            sch.weight = qlineedit1->text().toInt();
+            sch.name = qlineedit2->text().toUtf8().toStdString();
+            if (value3 == "Attendance")
+                sch.item = std::make_unique<ItemAttendance>();
+            else
+                sch.item = std::make_unique<ItemManual>();
 
-        RatingItem sch;
-        sch.weight = qlineedit1->text().toInt();
-        sch.name = qlineedit2->text().toUtf8().toStdString();
-        if (value3 == "Attendance")
-            sch.item = std::make_unique<ItemAttendance>();
-        else
-            sch.item = std::make_unique<ItemManual>();
- 
-        currentDb->insert(sch);
-        sch.item->setItemName(sch.name);
-        QStandardItemModel* x = static_cast<QStandardItemModel*>(ui->listScheme->model());
-        std::string temp1 = qlineedit2->text().toUtf8().toStdString() + " (" + value3.toUtf8().toStdString()
-            + ", " + std::to_string(sch.weight) + "%)";
-        QString appendString(temp1.c_str());
-        QStandardItem* appendStandardItem = new QStandardItem(appendString);
-        appendStandardItem->setEditable(false);
-        x->appendRow(appendStandardItem);
-        vScheme.push_back(std::move(sch));
+            currentDb->insert(sch);
+            vScheme.push_back(std::move(sch));
+            QStandardItemModel* x = static_cast<QStandardItemModel*>(ui->listScheme->model());
+            std::string temp1 = qlineedit2->text().toUtf8().toStdString() + " (" + value3.toUtf8().toStdString()
+                + ", " + std::to_string(sch.weight) + "%)";
+            QString* appendString = new QString(temp1.c_str());
+            QStandardItem* appendStandardItem = new QStandardItem(*appendString);
+
+            x->appendRow(appendStandardItem);
+            vScheme.push_back(std::move(sch));
+        }
+
     }
     syncRatingItems();
     updateTotalScore();
