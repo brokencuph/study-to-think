@@ -8,6 +8,7 @@
 #include <QSpinBox>
 #include <QDialogButtonBox>
 #include <QLabel>
+#include <QList>
 #include <QLineEdit>
 #include <QChart>
 #include <QChartView>
@@ -24,6 +25,7 @@
 #include"attendancescoredialog.h"
 #include "db_access.h"
 #include "stat_utils.h"
+#include <QMap>
 
 static const QStringList overviewNames =
 {
@@ -45,6 +47,8 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->actionClose, &QAction::triggered, this, &MainWindow::uiUpdateForClosing);
     connect(ui->toolButtonStudentAdd, &QAbstractButton::clicked, this, &MainWindow::uiAddStudent);
     connect(ui->toolButtonStudentRemove, &QAbstractButton::clicked, this, &MainWindow::uiRemoveStudent);
+    connect(ui->toolButtonSchemeAdd, &QAbstractButton::clicked, this, &MainWindow::uiAddScheme);
+    connect(ui->toolButtonSchemeRemove, &QAbstractButton::clicked, this, &MainWindow::uiRemoveScheme);
     connect(this, &MainWindow::totalScoreUpdated, this, &MainWindow::updateOverviewTab);
 }
 
@@ -238,6 +242,88 @@ void MainWindow::uiRemoveStudent(bool)
 
     }
     updateOverviewTab();
+}
+
+void MainWindow::uiAddScheme(bool)
+{
+    QDialog dialog(this);
+    QFormLayout form(&dialog);
+    form.addRow(new QLabel("User input:"));
+    // Value1
+    QString value1 = QString("Percentage: ");
+    QLineEdit* qlineedit1 = new QLineEdit(&dialog);
+    form.addRow(value1, qlineedit1);
+    // Value2
+    QString value2 = QString("Input Name: ");
+    QLineEdit* qlineedit2 = new QLineEdit(&dialog);
+    form.addRow(value2, qlineedit2);
+    QStringList items;
+    items << "Attendance" << "Manual" ;
+    QString dlgTitle = "Selection";
+    QString txtLabel = "Which one.";
+    int     curIndex = 0;
+    bool    editable = true;
+    bool    ok = false;
+    QString value3 = QInputDialog::getItem(this, dlgTitle, txtLabel, items, curIndex, editable, &ok);
+    
+    //QLineEdit* qlineedit3 = new QLineEdit(&dialog);
+    //form.addRow(value3, qlineedit3);
+    // Add Cancel and OK button
+    QDialogButtonBox buttonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel,
+        Qt::Horizontal, &dialog);
+    form.addRow(&buttonBox);
+    QObject::connect(&buttonBox, SIGNAL(accepted()), &dialog, SLOT(accept()));
+    QObject::connect(&buttonBox, SIGNAL(rejected()), &dialog, SLOT(reject()));
+
+    // Process when OK button is clicked
+    if (dialog.exec() == QDialog::Accepted) {
+
+        RatingItem sch;
+        sch.weight = qlineedit1->text().toInt();
+        sch.name = qlineedit2->text().toUtf8().toStdString();
+        if (value3 == "Attendance")
+            sch.item = std::make_unique<ItemAttendance>();
+        else
+            sch.item = std::make_unique<ItemManual>();
+ 
+        currentDb->insert(sch);
+        vScheme.push_back(std::move(sch));
+        QStandardItemModel* x = static_cast<QStandardItemModel*>(ui->listScheme->model());
+        std::string temp1 = qlineedit2->text().toUtf8().toStdString() + " (" + value3.toUtf8().toStdString()
+            + ", " + std::to_string(sch.weight) + "%)";
+        QString *appendString=new QString(temp1.c_str());
+        QStandardItem* appendStandardItem = new QStandardItem(*appendString);
+        
+        x->appendRow(appendStandardItem);
+    }
+    syncRatingItems();
+    updateTotalScore();
+    updateOverviewTab();
+}
+
+void MainWindow::uiRemoveScheme(bool)
+{
+    std::set<int, std::greater<int> > s1;
+    std::set<int, std::greater<int>>::iterator s1_it;
+    s1_it = s1.begin();
+    std::vector<RatingItem>::iterator v_it_1;
+    auto selected = ui->listScheme->selectionModel()->selectedIndexes();
+    for (const auto& x : selected)
+    {
+        s1.insert(x.row());
+    }
+    for (auto i = s1.begin(); i != s1.end(); i++)
+    {
+        auto rowIndex = *i;
+        QStandardItemModel* x = static_cast<QStandardItemModel*>(ui->listScheme->model());
+        x->removeRow(rowIndex);
+        this->currentDb->removeByKey(vScheme[rowIndex]);
+        v_it_1 = vScheme.begin();
+        vScheme.erase(v_it_1 + rowIndex);
+
+    }
+    updateOverviewTab();
+
 }
 
 void MainWindow::uiEditScheme(const QModelIndex& idx)

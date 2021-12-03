@@ -35,6 +35,10 @@ public:
 
     void uiRemoveStudent(bool);
 
+    void uiAddScheme(bool);
+
+    void uiRemoveScheme(bool);
+
     void uiEditScheme(const QModelIndex&);
 
     void studentTableGridEdited(QStandardItem* item);

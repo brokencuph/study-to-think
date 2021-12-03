@@ -6,5 +6,6 @@
 #include "grading_scheme.h"
 
 Q_DECLARE_METATYPE(Student*);
+Q_DECLARE_METATYPE(RatingItem*);
 
 #endif
