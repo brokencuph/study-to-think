@@ -4,6 +4,8 @@
 cmake_minimum_required (VERSION 3.8)
 enable_testing()
 
+cmake_policy(SET CMP0072 NEW)
+
 set(CMAKE_TOOLCHAIN_FILE ${CMAKE_CURRENT_SOURCE_DIR}/vcpkg/scripts/buildsystems/vcpkg.cmake
   CACHE STRING "Vcpkg toolchain file")
 

@@ -56,7 +56,7 @@ void ManualScoreDialog::scoreTableGridEdited(QStandardItem* item)
     auto stuId = model->item(rowIndex, 0)->text().toUtf8().toStdString();
     //auto stuName = model->item(rowIndex, 1)->text().toUtf8().toStdString();
     auto updatedText = item->text().toUtf8().toStdString();
-    if (!std::all_of(updatedText.begin(), updatedText.end(), std::isdigit))
+    if (!std::all_of(updatedText.begin(), updatedText.end(), isdigit))
     {
         QMessageBox::critical(this, tr("Invalid Input"), tr("Input could not contain non-digit."));
         item->setText(std::to_string(scoreStore->studentScores[stuId]).c_str());
