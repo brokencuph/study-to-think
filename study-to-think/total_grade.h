@@ -32,6 +32,7 @@ namespace stt::grade_utils
 		TotalGrade& operator/=(const TotalGrade& other);
 		bool operator==(const TotalGrade& other) const;
 		std::string toString() const;
+		double toDouble() const;
 	};
 
 	// visitor

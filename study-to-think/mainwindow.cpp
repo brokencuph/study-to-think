@@ -1,6 +1,7 @@
 #include <QMessageBox>
 #include <QFileDialog>
 #include <QStandardItemModel>
+#include <QSortFilterProxyModel>
 #include <QVariant>
 #include <algorithm>
 #include <QInputDialog>
@@ -200,12 +201,12 @@ void MainWindow::uiUpdateForOpeningDb()
     {
         QStandardItem* item[4];
         item[0] = new QStandardItem(QString(vStudent[i].id.c_str()));
-        item[0]->setData(QVariant::fromValue(&vStudent[i]));
+        item[0]->setData(QString(vStudent[i].id.c_str()), Qt::UserRole);
         item[0]->setEditable(false);
         item[1] = new QStandardItem(QString(vStudent[i].name.c_str()));
-        item[1]->setData(QVariant::fromValue(&vStudent[i]));
+        item[1]->setData(QString(vStudent[i].name.c_str()), Qt::UserRole);
         item[2] = new QStandardItem(QString(vStudent[i].extraInfo.c_str()));
-        item[2]->setData(QVariant::fromValue(&vStudent[i]));
+        item[2]->setData(QString(vStudent[i].extraInfo.c_str()), Qt::UserRole);
         //item[3] = new QStandardItem(QString(std::to_string(vStudent[i].getTotalScore(vScheme)).c_str()));
         //item[3]->setEditable(false);
         stuModel->setItem(i, 0, item[0]);
@@ -218,7 +219,15 @@ void MainWindow::uiUpdateForOpeningDb()
     stuModel->setHeaderData(2, Qt::Horizontal, tr("Information"));
     stuModel->setHeaderData(3, Qt::Horizontal, tr("Total Score"));
     connect(stuModel, &QStandardItemModel::itemChanged, this, &MainWindow::studentTableGridEdited);
-    ui->tableStudent->setModel(stuModel);
+    QSortFilterProxyModel* proxyModel = new QSortFilterProxyModel();
+    proxyModel->setSourceModel(stuModel);
+    proxyModel->setSortRole(Qt::UserRole);
+    proxyModel->setFilterKeyColumn(-1);
+    proxyModel->setFilterWildcard(ui->lineStudentFilter->text());
+    connect(ui->lineStudentFilter, &QLineEdit::textChanged, proxyModel, &QSortFilterProxyModel::setFilterWildcard);
+    ui->tableStudent->setModel(proxyModel);
+    ui->tableStudent->setSortingEnabled(true);
+    ui->tableStudent->sortByColumn(0, Qt::AscendingOrder);
     ui->toolButtonStudentAdd->setEnabled(true);
     ui->toolButtonStudentRemove->setEnabled(true);
     updateTotalScore();
@@ -233,11 +242,16 @@ void MainWindow::uiUpdateForClosing(bool closeDb)
     ui->actionExport->setEnabled(false);
     ui->actionImport->setEnabled(false);
     disconnect(ui->comboOverview, nullptr, nullptr, nullptr);
+    disconnect(ui->lineStudentFilter, nullptr, nullptr, nullptr);
     ui->toolButtonStudentAdd->setEnabled(false);
     ui->toolButtonStudentRemove->setEnabled(false);
     ui->toolButtonSchemeAdd->setEnabled(false);
     ui->toolButtonSchemeRemove->setEnabled(false);
-    disconnect(static_cast<QStandardItemModel*>(ui->tableStudent->model()), nullptr, nullptr, nullptr);
+    QSortFilterProxyModel* proxyModel = static_cast<QSortFilterProxyModel*>(ui->tableStudent->model());
+    if (proxyModel != nullptr)
+    {
+        disconnect(static_cast<QStandardItemModel*>(proxyModel->sourceModel()), nullptr, nullptr, nullptr);
+    }
     disconnect(ui->listScheme, nullptr, nullptr, nullptr);
     auto modelStudent = ui->tableStudent->model();
     auto modelScheme = ui->listScheme->model();
@@ -277,15 +291,16 @@ void MainWindow::uiAddStudent(bool)
         Student stu(qlineedit2->text().toUtf8().toStdString(), qlineedit1->text().toUtf8().toStdString());
         this->vStudent.push_back(stu);
         this->currentDb->insert(stu);
-        QStandardItemModel* x = static_cast<QStandardItemModel*>(ui->tableStudent->model());
+        QSortFilterProxyModel* proxyModel = static_cast<QSortFilterProxyModel*>(ui->tableStudent->model());
+        QStandardItemModel* x = static_cast<QStandardItemModel*>(proxyModel->sourceModel());
         QStandardItem* item[3];
         item[0] = new QStandardItem(QString(stu.id.c_str()));
-        item[0]->setData(QVariant::fromValue(&vStudent[vStudent.size()-1]));
+        item[0]->setData(QString(stu.id.c_str()), Qt::UserRole);
         item[0]->setEditable(false);
         item[1] = new QStandardItem(QString(stu.name.c_str()));
-        item[1]->setData(QVariant::fromValue(&vStudent[vStudent.size() - 1]));
+        item[1]->setData(QString(stu.name.c_str()), Qt::UserRole);
         item[2] = new QStandardItem(QString(stu.extraInfo.c_str()));
-        item[2]->setData(QVariant::fromValue(&vStudent[vStudent.size() - 1]));
+        item[2]->setData(QString(stu.extraInfo.c_str()), Qt::UserRole);
         
         x->appendRow(QList<QStandardItem*>(item, item + 3));
     }
@@ -301,15 +316,16 @@ void MainWindow::uiRemoveStudent(bool)
     s1_it = s1.begin();
     std::vector<Student>::iterator v_it_1;
     auto selected = ui->tableStudent->selectionModel()->selectedIndexes();
+    auto proxyModel = static_cast<QSortFilterProxyModel*>(ui->tableStudent->model());
     for (const auto& x : selected)
     {
-
-        s1.insert(x.row());
+        auto y = proxyModel->mapToSource(x);
+        s1.insert(y.row());
     }
     for (auto i = s1.begin(); i != s1.end(); i++)
     {
         auto rowIndex = *i;
-        QStandardItemModel* x = static_cast<QStandardItemModel*>(ui->tableStudent->model());
+        QStandardItemModel* x = static_cast<QStandardItemModel*>(proxyModel->sourceModel());
         x->removeRow(rowIndex);
         this->currentDb->removeByKey(vStudent[rowIndex]);
         v_it_1 = vStudent.begin();
@@ -446,7 +462,8 @@ void MainWindow::studentTableGridEdited(QStandardItem* item)
         if (!DbSession::checkStringLiteral(updatedStr))
         {
             QMessageBox::critical(this, tr("Invalid Input"), tr("Input could not contain single quote."));
-            item->setText(vStudent[rowIndex].name.c_str()); ;
+            item->setText(vStudent[rowIndex].name.c_str());
+            item->setData(QString(vStudent[rowIndex].name.c_str()), Qt::UserRole);
             return;
         }
         vStudent[rowIndex].name = updatedStr;
@@ -458,6 +475,7 @@ void MainWindow::studentTableGridEdited(QStandardItem* item)
         {
             QMessageBox::critical(this, tr("Invalid Input"), tr("Input could not contain single quote."));
             item->setText(vStudent[rowIndex].extraInfo.c_str());
+            item->setData(QString(vStudent[rowIndex].extraInfo.c_str()), Qt::UserRole);
             return;
         }
         vStudent[rowIndex].extraInfo = updatedStr;
@@ -470,10 +488,13 @@ void MainWindow::studentTableGridEdited(QStandardItem* item)
 
 void MainWindow::updateTotalScore()
 {
-    auto model = static_cast<QStandardItemModel*>(ui->tableStudent->model());
+    auto proxyModel = static_cast<QSortFilterProxyModel*>(ui->tableStudent->model());
+    auto model = static_cast<QStandardItemModel*>(proxyModel->sourceModel());
     for (size_t i = 0; i < vStudent.size(); i++)
     {
-        QStandardItem* item = new QStandardItem(QString(vStudent[i].getTotalScore(vScheme).toString().c_str()));
+        auto totalScore = vStudent[i].getTotalScore(vScheme);
+        QStandardItem* item = new QStandardItem(QString(totalScore.toString().c_str()));
+        item->setData(totalScore.toDouble(), Qt::UserRole);
         item->setEditable(false);
         model->setItem(i, 3, item);
     }
@@ -528,7 +549,8 @@ void MainWindow::showChart()
     {
         static const int seps[] = { 0, 50, 53, 58, 63, 68, 72, 78, 83, 88, 93 };
         std::vector<int> ans(11);
-        QStandardItemModel* model = static_cast<QStandardItemModel*>(ui->tableStudent->model());
+        QSortFilterProxyModel* proxyModel = static_cast<QSortFilterProxyModel*>(ui->tableStudent->model());
+        QStandardItemModel* model = static_cast<QStandardItemModel*>(proxyModel->sourceModel());
         for (size_t i = 0; i < vStudent.size(); i++)
         {
             auto scoreRepr = model->item(i, 3)->text().toStdString();
@@ -564,7 +586,8 @@ void MainWindow::showChart()
 void MainWindow::showStatistics()
 {
     using namespace stt::stat_utils;
-    QStandardItemModel* model = static_cast<QStandardItemModel*>(ui->tableStudent->model());
+    QSortFilterProxyModel* proxyModel = static_cast<QSortFilterProxyModel*>(ui->tableStudent->model());
+    QStandardItemModel* model = static_cast<QStandardItemModel*>(proxyModel->sourceModel());
     std::vector<int> totalScores;
     for (size_t i = 0; i < vStudent.size(); i++)
     {

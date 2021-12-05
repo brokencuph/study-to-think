@@ -29,7 +29,16 @@
        </attribute>
        <layout class="QHBoxLayout" name="horizontalLayout_2">
         <item>
-         <widget class="QTableView" name="tableStudent"/>
+         <widget class="QWidget" name="widget_4" native="true">
+          <layout class="QVBoxLayout" name="verticalLayout_4">
+           <item>
+            <widget class="QLineEdit" name="lineStudentFilter"/>
+           </item>
+           <item>
+            <widget class="QTableView" name="tableStudent"/>
+           </item>
+          </layout>
+         </widget>
         </item>
         <item alignment="Qt::AlignTop">
          <widget class="QWidget" name="widget" native="true">
@@ -162,7 +171,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>26</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">

@@ -55,6 +55,18 @@ namespace stt::grade_utils
 		return std::visit(TotalGradeToString(), repr);
 	}
 
+	double TotalGrade::toDouble() const
+	{
+		if (repr.index() == 0)
+		{
+			return std::get<double>(repr);
+		}
+		else
+		{
+			return -(int)std::get<SpecialGrade>(repr);
+		}
+	}
+
 	TotalGrade::TotalGrade(const TotalGradeRepr& repr)
 		: repr(repr)
 	{
