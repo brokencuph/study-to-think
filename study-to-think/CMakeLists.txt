@@ -8,7 +8,8 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 
 find_package(QT NAMES Qt6 Qt5 COMPONENTS Widgets REQUIRED)
-find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets REQUIRED)
+find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Widgets LinguistTools REQUIRED)
+qt_create_translation(QM_FILES ${CMAKE_SOURCE_DIR} stt.ts)
 
 find_package(unofficial-sqlite3 CONFIG REQUIRED)
 
@@ -18,7 +19,7 @@ find_package(unofficial-sqlite3 CONFIG REQUIRED)
 
 find_package(Qt${QT_VERSION_MAJOR}Charts)
 
-add_executable(stt_gui WIN32 "mainwindow.cpp" "mainwindow.h" "mainwindow.ui" "qt_main.cpp" "db_access.cpp" "student.cpp" "student.h" "qt_defs.h" "grading_scheme.cpp" "grading_scheme.h" "manualscoredialog.cpp" "manualscoredialog.h" "manualscoredialog.ui" "attendancescoredialog.cpp" "attendancescoredialog.h" "attendancescoredialog.ui" "stat_utils.cpp" "stat_utils.h" "csv_io.h" "csv_io.cpp" "total_grade.h" "total_grade.cpp")
+add_executable(stt_gui WIN32 ${QM_FILES} "mainwindow.cpp" "mainwindow.h" "mainwindow.ui" "qt_main.cpp" "db_access.cpp" "student.cpp" "student.h" "qt_defs.h" "grading_scheme.cpp" "grading_scheme.h" "manualscoredialog.cpp" "manualscoredialog.h" "manualscoredialog.ui" "attendancescoredialog.cpp" "attendancescoredialog.h" "attendancescoredialog.ui" "stat_utils.cpp" "stat_utils.h" "csv_io.h" "csv_io.cpp" "total_grade.h" "total_grade.cpp")
 target_link_libraries(stt_gui PRIVATE Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::Charts unofficial::sqlite3::sqlite3)
 
 # TODO: Add tests and install targets if needed.
