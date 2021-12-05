@@ -39,10 +39,6 @@ TEST(AttendanceTest, GetScore)
 	} // some lates
 	Student stu111("111", "111"), stu222("222", "222"), stu333("333", "333");
 	ASSERT_EQ(attendance.getScore(stu111), TotalGrade(100));
-	ASSERT_ANY_THROW(
-	{ 
-		attendance.getScore(stu222);
-	});
 	ASSERT_EQ(attendance.getScore(stu222), TotalGrade(SpecialGrade::T));
 	ASSERT_EQ(attendance.getScore(stu333), TotalGrade(70));
 	SUCCEED();
