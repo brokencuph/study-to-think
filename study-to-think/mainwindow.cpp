@@ -619,7 +619,7 @@ void MainWindow::showChart()
             {
                 continue;
             }
-            int offset = std::lower_bound(std::begin(seps), std::end(seps), score) - 1 - std::begin(seps);
+            int offset = std::upper_bound(std::begin(seps), std::end(seps), score) - 1 - std::begin(seps);
             ans[offset < 0 ? 0 : offset]++;
         }
         return ans;
@@ -683,7 +683,7 @@ void MainWindow::selectStudentAtLevel(int level)
         }
         else
         {
-            category = std::lower_bound(std::begin(seps), std::end(seps), scoreValue) - 1 - std::begin(seps);
+            category = std::upper_bound(std::begin(seps), std::end(seps), scoreValue) - 1 - std::begin(seps);
         }
         if (category == level)
         {
