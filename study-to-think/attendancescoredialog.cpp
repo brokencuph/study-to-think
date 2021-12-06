@@ -78,7 +78,7 @@ AttendanceScoreDialog::AttendanceScoreDialog(QWidget *parent, const std::vector<
         ClassIndexList << qAddString;
     }
     ui->comboBox_2->addItems(ClassIndexList);
-    QStandardItemModel* model = new QStandardItemModel(vStudent.size(), 3);
+    QStandardItemModel* model = new QStandardItemModel(vStudent.size(), 4);
     for (int i = 0; i < vStudent.size(); i++)
     {
         QStandardItem* item[3];
@@ -90,15 +90,14 @@ AttendanceScoreDialog::AttendanceScoreDialog(QWidget *parent, const std::vector<
         item[1]->setEditable(false);
         int choice = (int)scoreStore->studentAttendance.at(vStudent[i].id)
             [ui->comboBox_2->currentIndex()];
-
-        //item[2] = new QStandardItem(checkInTypeNames[choice]);
-        //item[2]->setData(QVariant::fromValue(&vStudent[i]));
-
         model->setData(model->index(i, 2), tr(checkInTypeNames[choice]), Qt::EditRole);
+        //model->setData(model->index(i, 3), QString::fromStdString(scoreStore->getScore(vStudent[i]).toString()));
         //model->setData(model->index(i, 2), tr(checkInTypeNames[choice]), Qt::DisplayRole);
         model->setItem(i, 0, item[0]);
         model->setItem(i, 1, item[1]);
-        //model->setItem(i, 2, item[2]);
+        item[2] = new QStandardItem(QString::fromStdString(scoreStore->getScore(vStudent[i]).toString()));
+        item[2]->setEditable(false);
+        model->setItem(i, 3, item[2]);
 
     }
     ui->tableView->setModel(model);
@@ -136,6 +135,10 @@ void AttendanceScoreDialog::updateModel(int index)
 void AttendanceScoreDialog::updateAttendance(const QModelIndex& topLeft, const QModelIndex& bottomRight, const QList<int>& roles)
 {
     assert(topLeft == bottomRight);
+    if (topLeft.column() != 2)
+    {
+        return;
+    }
     CheckInType choice = checkInTypeIds.at(topLeft.data(Qt::EditRole).toString().toUtf8().toStdString());
     int row = topLeft.row();
     const Student& stu = (*vStudent)[row];
@@ -145,6 +148,8 @@ void AttendanceScoreDialog::updateAttendance(const QModelIndex& topLeft, const Q
     dbo.itemName = scoreStore->getItemName();
     dbo.scoreRepr = ItemAttendance::scoreRepr(scoreStore->studentAttendance[stu.id]);
     currentDb->upsert(dbo);
+    QStandardItemModel* model = static_cast<QStandardItemModel*>(ui->tableView->model());
+    model->item(row, 3)->setText(QString::fromStdString(scoreStore->getScore(stu).toString()));
     emit scoreChanged();
 }   
 
