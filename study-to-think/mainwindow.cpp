@@ -346,7 +346,9 @@ void MainWindow::uiAddScheme(bool)
     int     curIndex = 0;
     bool    editable = true;
     bool    ok = false;
-    QString value3 = QInputDialog::getItem(this, dlgTitle, txtLabel, items, curIndex, editable, &ok);
+    QInputDialog* qid = new QInputDialog;
+    QString value3 = qid->getItem(this, dlgTitle, txtLabel, items, curIndex, false, &ok);
+    
 
     // Add Cancel and OK button
     if (ok)

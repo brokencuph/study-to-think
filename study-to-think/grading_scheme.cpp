@@ -115,7 +115,6 @@ std::string ItemAttendance::getItemName() const
 {
 	return itemName;
 }
-
 TotalGrade ItemAttendance::getScore(const Student& student) const
 {
 	// TODO: implement the logic
