@@ -239,6 +239,8 @@ void MainWindow::uiUpdateForOpeningDb()
 
 void MainWindow::uiUpdateForClosing(bool closeDb)
 {
+    qDeleteAll(ui->widgetOverview->findChildren<QWidget*>("", Qt::FindDirectChildrenOnly));
+    qDeleteAll(ui->widgetOverview->findChildren<QLayout*>("", Qt::FindDirectChildrenOnly));
     ui->actionExport->setEnabled(false);
     ui->actionImport->setEnabled(false);
     disconnect(ui->comboOverview, nullptr, nullptr, nullptr);
@@ -592,6 +594,7 @@ void MainWindow::showChart()
     };
     auto barData = countRange();
     barSet->append(QList<qreal>(barData.cbegin(), barData.cend()));
+    connect(barSet, &QBarSet::clicked, this, &MainWindow::selectStudentAtLevel);
     series->append(barSet);
     view->chart()->addSeries(series);
     QBarCategoryAxis* axisX = new QBarCategoryAxis();
@@ -625,5 +628,38 @@ void MainWindow::showStatistics()
     QFormLayout* formLayout = new QFormLayout(ui->widgetOverview);
     QLabel* labelAvg = new QLabel(qAverageScore(totalScores.cbegin(), totalScores.cend()), ui->widgetOverview);
     formLayout->addRow(tr("Average Score:"), labelAvg);
+}
+
+void MainWindow::selectStudentAtLevel(int level)
+{
+    static const int seps[] = { 0, 50, 53, 58, 63, 68, 72, 78, 83, 88, 93 };
+    QSortFilterProxyModel* proxyModel = static_cast<QSortFilterProxyModel*>(ui->tableStudent->model());
+    ui->tableStudent->clearSelection();
+    QItemSelectionModel* selectionModel = ui->tableStudent->selectionModel();
+    for (size_t i = 0; i < proxyModel->rowCount(); i++)
+    {
+        std::string scoreText = proxyModel->data(proxyModel->index(i, 3)).toString().toStdString();
+        if (scoreText.empty() || !isdigit(scoreText[0]))
+        {
+            continue;
+        }
+        int scoreValue = std::stoi(scoreText);
+        int category;
+        if (scoreValue == 0)
+        {
+            category = 0;
+        }
+        else
+        {
+            category = std::lower_bound(std::begin(seps), std::end(seps), scoreValue) - 1 - std::begin(seps);
+        }
+        if (category == level)
+        {
+            selectionModel->select(QItemSelection(proxyModel->index(i, 0), proxyModel->index(i, 0)),
+                QItemSelectionModel::Select | QItemSelectionModel::Rows);
+        }
+    }
+    ui->tabWidget->setCurrentIndex(0);
+    ui->tableStudent->setFocus();
 }
 

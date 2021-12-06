@@ -57,6 +57,8 @@ public:
 
     void showStatistics();
 
+    void selectStudentAtLevel(int level);
+
 private:
     Ui::MainWindow *ui;
     std::unique_ptr<DbSession> currentDb;
