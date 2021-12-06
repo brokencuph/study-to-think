@@ -29,6 +29,7 @@
 #include "stat_utils.h"
 #include "csv_io.h"
 
+
 static const QStringList overviewNames =
 {
     QObject::tr("Distribution"),
@@ -281,16 +282,31 @@ void MainWindow::uiAddStudent(bool)
     QLineEdit* qlineedit2 = new QLineEdit(&dialog);
     form.addRow(value2, qlineedit2);
     // Add Cancel and OK button
+gotoTagRestudent:
     QDialogButtonBox buttonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel,
         Qt::Horizontal, &dialog);
     form.addRow(&buttonBox);
+    
     QObject::connect(&buttonBox, SIGNAL(accepted()), &dialog, SLOT(accept()));
     QObject::connect(&buttonBox, SIGNAL(rejected()), &dialog, SLOT(reject()));
 
     // Process when OK button is clicked
     if (dialog.exec() == QDialog::Accepted) {
+        if (!DbSession::checkStringLiteral(qlineedit2->text().toUtf8().toStdString()))
+        {
+            QMessageBox::critical(this, tr("Invalid Input"), tr("Input could not contain single quote."));
+
+            goto gotoTagRestudent;
+        }
+        if (!DbSession::checkStringLiteral(qlineedit1->text().toUtf8().toStdString()))
+        {
+            QMessageBox::critical(this, tr("Invalid Input"), tr("Input could not contain single quote."));
+
+            goto gotoTagRestudent;
+        }
         QSortFilterProxyModel* proxyModel = static_cast<QSortFilterProxyModel*>(ui->tableStudent->model());
         QStandardItemModel* x = static_cast<QStandardItemModel*>(proxyModel->sourceModel());
+
         Student stu(qlineedit2->text().toUtf8().toStdString(), qlineedit1->text().toUtf8().toStdString());
         auto it = std::find_if(vStudent.begin(), vStudent.end(), [&stu](const Student& exist)
             { return exist.id == stu.id; });
@@ -364,15 +380,19 @@ void MainWindow::uiAddScheme(bool)
     // Add Cancel and OK button
     if (ok)
     {
+        
         form.addRow(new QLabel("User input:"));
         // Value1
         QString value1 = QString("Percentage: ");
         QLineEdit* qlineedit1 = new QLineEdit(&dialog);
+       
         form.addRow(value1, qlineedit1);
         // Value2
         QString value2 = QString("Input Name: ");
         QLineEdit* qlineedit2 = new QLineEdit(&dialog);
+        
         form.addRow(value2, qlineedit2);
+    gotoTagReinput:
         QDialogButtonBox buttonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel,
             Qt::Horizontal, &dialog);
         form.addRow(&buttonBox);
@@ -381,6 +401,18 @@ void MainWindow::uiAddScheme(bool)
         if (dialog.exec() == QDialog::Accepted) {
 
             RatingItem sch;
+            if (qlineedit1->text().toInt()<=0 || qlineedit1->text().toInt() >=101)
+            {
+                QMessageBox::critical(this, tr("Invalid Input"), tr("number Input must be a positive integer from 1 to 100"));
+                
+                goto gotoTagReinput;
+            }
+            if (!DbSession::checkStringLiteral(qlineedit2->text().toUtf8().toStdString()))
+            {
+                QMessageBox::critical(this, tr("Invalid Input"), tr("Input could not contain single quote."));
+                
+                goto gotoTagReinput;
+            }
             sch.weight = qlineedit1->text().toInt();
             sch.name = qlineedit2->text().toUtf8().toStdString();
             auto it = std::find_if(vScheme.begin(), vScheme.end(), [&sch](const RatingItem& exist)

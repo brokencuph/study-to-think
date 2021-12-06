@@ -172,6 +172,7 @@ public:
 	static std::string polishForSql(int);
 
 	static bool checkStringLiteral(const std::string&);
+	
 };
 
 #endif
