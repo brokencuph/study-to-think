@@ -302,11 +302,22 @@ gotoTagRestudent:
 
             goto gotoTagRestudent;
         }
-        Student stu(qlineedit2->text().toUtf8().toStdString(), qlineedit1->text().toUtf8().toStdString());
-        this->vStudent.push_back(stu);
-        this->currentDb->insert(stu);
         QSortFilterProxyModel* proxyModel = static_cast<QSortFilterProxyModel*>(ui->tableStudent->model());
         QStandardItemModel* x = static_cast<QStandardItemModel*>(proxyModel->sourceModel());
+
+        Student stu(qlineedit2->text().toUtf8().toStdString(), qlineedit1->text().toUtf8().toStdString());
+        auto it = std::find_if(vStudent.begin(), vStudent.end(), [&stu](const Student& exist)
+            { return exist.id == stu.id; });
+        if (it != vStudent.end())
+        {
+            QMessageBox::critical(this, tr("Error"), tr("Student ID exists."));
+            size_t rowNum = it - vStudent.begin();
+            size_t proxyRowNum = proxyModel->mapFromSource(x->index(rowNum, 0)).row();
+            ui->tableStudent->selectRow(proxyRowNum);
+            return;
+        }
+        this->vStudent.push_back(stu);
+        this->currentDb->insert(stu);
         QStandardItem* item[3];
         item[0] = new QStandardItem(QString(stu.id.c_str()));
         item[0]->setData(QString(stu.id.c_str()), Qt::UserRole);
@@ -402,6 +413,18 @@ void MainWindow::uiAddScheme(bool)
             }
             sch.weight = qlineedit1->text().toInt();
             sch.name = qlineedit2->text().toUtf8().toStdString();
+            auto it = std::find_if(vScheme.begin(), vScheme.end(), [&sch](const RatingItem& exist)
+                {
+                    return exist.name == sch.name;
+                });
+            QStandardItemModel* x = static_cast<QStandardItemModel*>(ui->listScheme->model());
+            if (it != vScheme.end())
+            {
+                QMessageBox::critical(this, tr("Error"), tr("Rating item name exists."));
+                size_t rowNum = it - vScheme.begin();
+                ui->listScheme->setCurrentIndex(x->index(rowNum, 0));
+                return;
+            }
             if (value3 == "Attendance")
                 sch.item = std::make_unique<ItemAttendance>();
             else
@@ -409,7 +432,6 @@ void MainWindow::uiAddScheme(bool)
 
             currentDb->insert(sch);
             sch.item->setItemName(sch.name);
-            QStandardItemModel* x = static_cast<QStandardItemModel*>(ui->listScheme->model());
             std::string temp1 = qlineedit2->text().toUtf8().toStdString() + " (" + value3.toUtf8().toStdString()
                 + ", " + std::to_string(sch.weight) + "%)";
             QString appendString = QString(temp1.c_str());
