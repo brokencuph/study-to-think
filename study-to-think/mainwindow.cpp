@@ -29,6 +29,7 @@
 #include "stat_utils.h"
 #include "csv_io.h"
 
+
 static const QStringList overviewNames =
 {
     QObject::tr("Distribution"),
@@ -279,7 +280,7 @@ void MainWindow::uiAddStudent(bool)
     QLineEdit* qlineedit2 = new QLineEdit(&dialog);
     form.addRow(value2, qlineedit2);
     // Add Cancel and OK button
-restudent:
+gotoTagRestudent:
     QDialogButtonBox buttonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel,
         Qt::Horizontal, &dialog);
     form.addRow(&buttonBox);
@@ -293,13 +294,13 @@ restudent:
         {
             QMessageBox::critical(this, tr("Invalid Input"), tr("Input could not contain single quote."));
 
-            goto restudent;
+            goto gotoTagRestudent;
         }
         if (!DbSession::checkStringLiteral(qlineedit1->text().toUtf8().toStdString()))
         {
             QMessageBox::critical(this, tr("Invalid Input"), tr("Input could not contain single quote."));
 
-            goto restudent;
+            goto gotoTagRestudent;
         }
         Student stu(qlineedit2->text().toUtf8().toStdString(), qlineedit1->text().toUtf8().toStdString());
         this->vStudent.push_back(stu);
@@ -378,7 +379,7 @@ void MainWindow::uiAddScheme(bool)
         QLineEdit* qlineedit2 = new QLineEdit(&dialog);
         
         form.addRow(value2, qlineedit2);
-    reinput:
+    gotoTagReinput:
         QDialogButtonBox buttonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel,
             Qt::Horizontal, &dialog);
         form.addRow(&buttonBox);
@@ -391,13 +392,13 @@ void MainWindow::uiAddScheme(bool)
             {
                 QMessageBox::critical(this, tr("Invalid Input"), tr("number Input must be a positive integer from 1 to 100"));
                 
-                goto reinput;
+                goto gotoTagReinput;
             }
             if (!DbSession::checkStringLiteral(qlineedit2->text().toUtf8().toStdString()))
             {
                 QMessageBox::critical(this, tr("Invalid Input"), tr("Input could not contain single quote."));
                 
-                goto reinput;
+                goto gotoTagReinput;
             }
             sch.weight = qlineedit1->text().toInt();
             sch.name = qlineedit2->text().toUtf8().toStdString();
