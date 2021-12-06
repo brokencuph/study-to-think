@@ -287,12 +287,21 @@ void MainWindow::uiAddStudent(bool)
 
     // Process when OK button is clicked
     if (dialog.exec() == QDialog::Accepted) {
-        
-        Student stu(qlineedit2->text().toUtf8().toStdString(), qlineedit1->text().toUtf8().toStdString());
-        this->vStudent.push_back(stu);
-        this->currentDb->insert(stu);
         QSortFilterProxyModel* proxyModel = static_cast<QSortFilterProxyModel*>(ui->tableStudent->model());
         QStandardItemModel* x = static_cast<QStandardItemModel*>(proxyModel->sourceModel());
+        Student stu(qlineedit2->text().toUtf8().toStdString(), qlineedit1->text().toUtf8().toStdString());
+        auto it = std::find_if(vStudent.begin(), vStudent.end(), [&stu](const Student& exist)
+            { return exist.id == stu.id; });
+        if (it != vStudent.end())
+        {
+            QMessageBox::critical(this, tr("Error"), tr("Student ID exists."));
+            size_t rowNum = it - vStudent.begin();
+            size_t proxyRowNum = proxyModel->mapFromSource(x->index(rowNum, 0)).row();
+            ui->tableStudent->selectRow(proxyRowNum);
+            return;
+        }
+        this->vStudent.push_back(stu);
+        this->currentDb->insert(stu);
         QStandardItem* item[3];
         item[0] = new QStandardItem(QString(stu.id.c_str()));
         item[0]->setData(QString(stu.id.c_str()), Qt::UserRole);
