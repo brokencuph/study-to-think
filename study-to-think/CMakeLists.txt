@@ -18,11 +18,16 @@ find_package(unofficial-sqlite3 CONFIG REQUIRED)
 
 find_package(Qt${QT_VERSION_MAJOR}Charts)
 
-add_executable(stt_gui WIN32 "mainwindow.cpp" "mainwindow.h" "mainwindow.ui" "qt_main.cpp" "db_access.cpp" "student.cpp" "student.h" "qt_defs.h" "grading_scheme.cpp" "grading_scheme.h" "manualscoredialog.cpp" "manualscoredialog.h" "manualscoredialog.ui" "attendancescoredialog.cpp" "attendancescoredialog.h" "attendancescoredialog.ui" "stat_utils.cpp" "stat_utils.h" "csv_io.h" "csv_io.cpp" "total_grade.h" "total_grade.cpp" "aboutdialog.h" "aboutdialog.cpp")
+set(APP_ICON_RESOURCE_WINDOWS "${CMAKE_CURRENT_SOURCE_DIR}/appicon.rc")
+
+add_executable(stt_gui WIN32 "mainwindow.cpp" "mainwindow.h" "mainwindow.ui" "qt_main.cpp" "db_access.cpp" "student.cpp" "student.h" "qt_defs.h" "grading_scheme.cpp" "grading_scheme.h" "manualscoredialog.cpp" "manualscoredialog.h" "manualscoredialog.ui" "attendancescoredialog.cpp" "attendancescoredialog.h" "attendancescoredialog.ui" "stat_utils.cpp" "stat_utils.h" "csv_io.h" "csv_io.cpp" "total_grade.h" "total_grade.cpp" "aboutdialog.h" "aboutdialog.cpp"
+	${APP_ICON_RESOURCE_WINDOWS} "icon.ico")
 target_link_libraries(stt_gui PRIVATE Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::Charts unofficial::sqlite3::sqlite3)
 target_include_directories(stt_gui PRIVATE "${PROJECT_BINARY_DIR}/study-to-think")
 
 configure_file(stt_config.h.in stt_config.h)
 configure_file(imgs/logo.png imgs/logo.png COPYONLY)
+configure_file(imgs/icon.png imgs/icon.png COPYONLY)
+# configure_file(imgs/icon.ico imgs/icon.ico COPYONLY)
 
 # TODO: Add tests and install targets if needed.

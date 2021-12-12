@@ -44,6 +44,8 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
     
+    this->setWindowIcon(QIcon("imgs/icon.png"));
+
     ui->comboOverview->addItems(overviewNames);
 
     connect(ui->actionOpen, &QAction::triggered, this, &MainWindow::selectDbForOpen);

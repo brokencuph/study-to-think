@@ -18,6 +18,7 @@ ManualScoreDialog::ManualScoreDialog(QWidget* parent,
     currentDb(currentDb)
 {
     ui->setupUi(this);
+    this->setWindowIcon(QIcon("imgs/icon.png"));
     const std::vector<Student>& vStudent = *_vStudent;
     QStandardItemModel* model = new QStandardItemModel(vStudent.size(), 3);
     for (int i = 0; i < vStudent.size(); i++)

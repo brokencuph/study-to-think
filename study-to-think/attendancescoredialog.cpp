@@ -45,6 +45,7 @@ AttendanceScoreDialog::AttendanceScoreDialog(QWidget *parent, const std::vector<
     ui(new Ui::AttendanceScoreDialog)
 {
     ui->setupUi(this);
+    this->setWindowIcon(QIcon("imgs/icon.png"));
     setUpdatesEnabled(false);
     const std::vector<Student>& vStudent = *_vStudent;
     //QStringList attendanceFormList;

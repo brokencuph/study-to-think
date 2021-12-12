@@ -2,3 +2,6 @@
 out
 build
 vcpkg_installed
+
+*.aps
+RCa09176
