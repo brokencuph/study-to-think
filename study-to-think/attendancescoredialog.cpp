@@ -28,6 +28,14 @@ static const QStringList attendanceFormList
     "Absent"
 };
 
+static const QStringList attendanceEmojis // encoded in UTF-8
+{
+    "\xe2\x9c\x93", // a tick mark, U+2713
+    "\xf0\x9f\x95\x98", // clock face 9 o'clock, U+1F558
+    "\xf0\x9f\x95\xa4", // clock face 9:30, U+1F564
+    "\xe2\x9d\x8c", // a cross mark, U+274C
+};
+
 AttendanceScoreDialog::AttendanceScoreDialog(QWidget *parent, const std::vector<Student>* _vStudent, ItemAttendance *scoreStore, RatingItem* item, DbSession* currentDb) :
     QDialog(parent),
     vStudent(_vStudent),
@@ -37,6 +45,7 @@ AttendanceScoreDialog::AttendanceScoreDialog(QWidget *parent, const std::vector<
     ui(new Ui::AttendanceScoreDialog)
 {
     ui->setupUi(this);
+    setUpdatesEnabled(false);
     const std::vector<Student>& vStudent = *_vStudent;
     //QStringList attendanceFormList;
     if (scoreStore->getSessionNumber()==0) // current session number invalid
@@ -107,6 +116,44 @@ AttendanceScoreDialog::AttendanceScoreDialog(QWidget *parent, const std::vector<
     connect(model, &QAbstractItemModel::dataChanged, this, &AttendanceScoreDialog::updateAttendance);
     connect(this, &AttendanceScoreDialog::scoreChanged,
         static_cast<MainWindow*>(this->parent()), &MainWindow::updateTotalScore);
+
+    QStandardItemModel* modelOverview = new QStandardItemModel(vStudent.size(), 3 + scoreStore->getSessionNumber());
+    QStringList overviewHeader = { tr("Student ID"), tr("Student Name") };
+    for (int i = 1; i <= scoreStore->getSessionNumber(); i++)
+    {
+        overviewHeader.append(std::to_string(i).c_str());
+    }
+    overviewHeader.append(tr("Score"));
+    modelOverview->setHorizontalHeaderLabels(overviewHeader);
+    for (size_t i = 0; i < vStudent.size(); i++)
+    {
+        QStandardItem* item[3];
+        item[0] = new QStandardItem(QString(vStudent[i].id.c_str()));
+        //item[0]->setData(QVariant::fromValue(&vStudent[i]));
+        item[0]->setEditable(false);
+        item[1] = new QStandardItem(QString(vStudent[i].name.c_str()));
+        //item[1]->setData(QVariant::fromValue(&vStudent[i]));
+        item[1]->setEditable(false);
+        modelOverview->setItem(i, 0, item[0]);
+        modelOverview->setItem(i, 1, item[1]);
+        item[2] = new QStandardItem(QString::fromStdString(scoreStore->getScore(vStudent[i]).toString()));
+        item[2]->setEditable(false);
+        modelOverview->setItem(i, 2 + scoreStore->getSessionNumber(), item[2]);
+        for (int j = 0; j < scoreStore->getSessionNumber(); j++)
+        {
+            QStandardItem* item = new QStandardItem;
+            CheckInType choice = scoreStore->studentAttendance.at(vStudent[i].id)[j];
+            QString dispText = attendanceEmojis[(int)choice];
+            item->setForeground(Qt::darkGreen);
+            item->setText(dispText);
+            item->setToolTip(checkInTypeNames[(int)choice]);
+            item->setEditable(false);
+            modelOverview->setItem(i, j + 2, item);
+        }
+    }
+    ui->tableOverview->setModel(modelOverview);
+    ui->tableOverview->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+    setUpdatesEnabled(true);
 }
 
 AttendanceScoreDialog::~AttendanceScoreDialog()
@@ -150,6 +197,13 @@ void AttendanceScoreDialog::updateAttendance(const QModelIndex& topLeft, const Q
     currentDb->upsert(dbo);
     QStandardItemModel* model = static_cast<QStandardItemModel*>(ui->tableView->model());
     model->item(row, 3)->setText(QString::fromStdString(scoreStore->getScore(stu).toString()));
+
+    QStandardItemModel* overviewModel = static_cast<QStandardItemModel*>(ui->tableOverview->model());
+    overviewModel->item(row, 2 + ui->comboBox_2->currentIndex())->setText(attendanceEmojis[(int)choice]);
+    overviewModel->item(row, 2 + ui->comboBox_2->currentIndex())->setToolTip(checkInTypeNames[(int)choice]);
+    overviewModel->item(row, 2 + scoreStore->getSessionNumber())->setText(
+        QString::fromStdString(scoreStore->getScore(stu).toString())
+    );
     emit scoreChanged();
 }   
 
