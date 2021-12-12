@@ -55,6 +55,7 @@ AttendanceScoreDialog::AttendanceScoreDialog(QWidget *parent, const std::vector<
         form.addRow(new QLabel("Please enter the number of lessons of this course:"));
         QLineEdit* qlineedit1 = new QLineEdit(&dialog);
         form.addRow(qlineedit1);
+gotoNumberOfLesson:
         QDialogButtonBox buttonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel,
             Qt::Horizontal, &dialog);
         form.addRow(&buttonBox);
@@ -68,6 +69,13 @@ AttendanceScoreDialog::AttendanceScoreDialog(QWidget *parent, const std::vector<
             //QStringList attendanceFormList;
             QStringList ClassIndexList;
             //attendanceFormList << "Normal" << "Late" << "Earlyleave" << "Absent";
+           
+            if (qlineedit1->text().toInt() <= 0 || qlineedit1->text().toInt() >= 101)
+            {
+                QMessageBox::critical(this, tr("Invalid Input"), tr("The number of lesson should be in range of [1,100]!"));
+
+                goto gotoNumberOfLesson;
+            }
             scoreStore->modifySessionNumber(stoi(qlineedit1->text().toUtf8().toStdString()));
             currentDb->updateByKey(*item);
         }
