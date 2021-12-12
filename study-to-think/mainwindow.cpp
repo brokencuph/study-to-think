@@ -25,6 +25,7 @@
 #include "./ui_mainwindow.h"
 #include "manualscoredialog.h"
 #include"attendancescoredialog.h"
+#include "aboutdialog.h"
 #include "db_access.h"
 #include "stat_utils.h"
 #include "csv_io.h"
@@ -50,6 +51,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->actionClose, &QAction::triggered, this, &MainWindow::uiUpdateForClosing);
     connect(ui->actionExport, &QAction::triggered, this, &MainWindow::exportDb);
     connect(ui->actionImport, &QAction::triggered, this, &MainWindow::importDb);
+    connect(ui->actionAbout, &QAction::triggered, this, &MainWindow::showAboutDialog);
     connect(ui->toolButtonStudentAdd, &QAbstractButton::clicked, this, &MainWindow::uiAddStudent);
     connect(ui->toolButtonStudentRemove, &QAbstractButton::clicked, this, &MainWindow::uiRemoveStudent);
     connect(ui->toolButtonSchemeAdd, &QAbstractButton::clicked, this, &MainWindow::uiAddScheme);
@@ -693,5 +695,11 @@ void MainWindow::selectStudentAtLevel(int level)
     }
     ui->tabWidget->setCurrentIndex(0);
     ui->tableStudent->setFocus();
+}
+
+void MainWindow::showAboutDialog(bool checked)
+{
+    AboutDialog dialog;
+    dialog.exec();
 }
 

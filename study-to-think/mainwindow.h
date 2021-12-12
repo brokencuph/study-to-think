@@ -59,6 +59,8 @@ public:
 
     void selectStudentAtLevel(int level);
 
+    void showAboutDialog(bool checked);
+
 private:
     Ui::MainWindow *ui;
     std::unique_ptr<DbSession> currentDb;
