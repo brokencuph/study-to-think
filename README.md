@@ -1,7 +1,7 @@
 # FEIRAN (original study-to-think)
 A simple student course grade assessment system written in C++ and Qt.
 
-Although it has a number of different features, this project was originally only aimed for a university software engineering practice, so **use with caution** if used for production purposes. However, it may be a good project for demonstrating use of several technology listed in the bottom.
+Although it has a number of different features, this project was originally only aimed for a university software engineering practice, so **use with caution** if used for production purposes. However, it may be a good project for demonstrating use of several technology listed at the bottom.
 
 Prebuilt Windows binary available [here](https://github.com/brokencuph/study-to-think/releases/tag/v1.0beta). (Windows 7 or below not supported)
 
