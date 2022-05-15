@@ -1,7 +1,9 @@
 # FEIRAN (original study-to-think)
-A student course grade assessment system written in C++ and Qt.
+A simple student course grade assessment system written in C++ and Qt.
 
-Prebuilt Windows binary available [here](https://github.com/brokencuph/study-to-think/releases/tag/v1.0beta).
+Although it has a number of different features, this project was originally only aimed for a university software engineering practice, so **use with caution** if used for production purposes. However, it may be a good project for demonstrating use of several technology listed in the bottom.
+
+Prebuilt Windows binary available [here](https://github.com/brokencuph/study-to-think/releases/tag/v1.0beta). (Windows 7 or below not supported)
 
 ## How to build/develop
 > **TL;DR**: clone the repository with submodules, install Qt6 and set up env vars, and build it normally like any CMake project.
@@ -22,6 +24,8 @@ Currently this project targets Qt6, and is tested to build with Qt 6.2.1. This i
 
 After manually downloading and installing Qt (also QtCharts), you should set environment variable `CMAKE_PREFIX_PATH` to your installation path (e.g. `C:\Qt\6.2.1\msvc2019_64`) in order to let CMake find Qt library files. To run the built binary, you should also make sure that the Qt library files can be found by the OS (e.g. by setting `PATH` in Windows or `LD_LIBRARY_PATH` in Linux).
 
+*Update*: verified to work with Qt 6.3.0 on Archlinux (2022/05/15).
+
 ### Other dependencies
 Other dependencies are managed by `vcpkg`, which should be automatically triggered during CMake process, so normally you need not do anything. If something fails, try to debug by inspecting CMake logs.
 
@@ -36,3 +40,10 @@ Treat the project as a regular CMake project and type relevant commands. Command
 cmake -S . -B build
 cmake --build build
 ```
+
+## Technology involved
+- [SQLite](https://www.sqlite.org/index.html)
+- [Qt](https://www.qt.io/)
+- [CMake](https://cmake.org/)
+- [Vcpkg](https://github.com/microsoft/vcpkg)
+- C++17
